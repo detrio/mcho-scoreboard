@@ -1,0 +1,520 @@
+* {
+  box-sizing: border-box;
+}
+
+.logo {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 60px;
+}
+
+@font-face {
+  font-family: 'overpass-mono';
+  src: url('./fonts/overpass-mono-bold.eot');
+  src: url('./fonts/overpass-mono-bold.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-mono-bold.woff2') format('woff2'),
+    url('./fonts/overpass-mono-bold.woff') format('woff'),
+    url('./fonts/overpass-mono-bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'overpass';
+  src: url('./fonts/overpass-light.eot');
+  src: url('./fonts/overpass-light.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-light.woff2') format('woff2'),
+    url('./fonts/overpass-light.woff') format('woff'),
+    url('./fonts/overpass-light.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'overpass';
+  src: url('./fonts/overpass-extralight.eot');
+  src: url('./fonts/overpass-extralight.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-extralight.woff2') format('woff2'),
+    url('./fonts/overpass-extralight.woff') format('woff'),
+    url('./fonts/overpass-extralight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'overpass';
+  src: url('./fonts/overpass-regular.eot');
+  src: url('./fonts/overpass-regular.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-regular.woff2') format('woff2'),
+    url('./fonts/overpass-regular.woff') format('woff'),
+    url('./fonts/overpass-regular.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'overpass';
+  src: url('./fonts/overpass-semibold.eot');
+  src: url('./fonts/overpass-semibold.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-semibold.woff2') format('woff2'),
+    url('./fonts/overpass-semibold.woff') format('woff'),
+    url('./fonts/overpass-semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'overpass';
+  src: url('./fonts/overpass-bold.eot');
+  src: url('./fonts/overpass-bold.eot?#iefix') format('embedded-opentype'),
+    url('./fonts/overpass-bold.woff2') format('woff2'),
+    url('./fonts/overpass-bold.woff') format('woff'),
+    url('./fonts/overpass-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 18px;
+  font-family: 'Arial';
+}
+
+.btn,
+.icon {
+  background-color: #000000;
+  border: solid 1px #999999;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+  padding: 3px;
+  text-transform: uppercase;
+}
+
+img.icon {
+  padding: 0px;
+}
+
+.btn:hover {
+  background-color: #333333;
+}
+
+#app,
+.scoreboard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+/* Base clock design */
+
+.clock {
+  cursor: pointer;
+  transition: color 50ms linear, background-color 150ms linear;
+}
+
+.clock.running {
+  color: #00ccff;
+}
+
+.clock.stopped {
+  color: #999999;
+}
+
+.clock.warning {
+  color: #ff3333;
+}
+
+.clock:hover {
+  background-color: #222222;
+}
+
+/* Main Clock */
+
+.allez-clock {
+  font-size: 196px;
+  color: #ffd600;
+  font-family: overpass, sans-serif;
+  font-weight: 400;
+  position: absolute;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 720px;
+  width: 40%;
+  z-index: 10;
+}
+
+/* Break Clock */
+
+.break-clock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 440px;
+  width: 300px;
+  text-align: center;
+  font-size: 72px;
+  opacity: 0.2;
+  transition: all 50ms linear;
+}
+
+.break-clock:hover {
+  background-color: transparent;
+}
+
+.break-clock.shown {
+  opacity: 1;
+}
+
+.break-clock.running,
+.break-clock.warning {
+  opacity: 1;
+}
+
+/* Fencers */
+
+.fencer {
+  position: absolute;
+  background: linear-gradient(#333333, #000000);
+  margin: auto;
+  top: 0;
+  height: 100%;
+  width: 30%;
+}
+
+.fencer.side-left {
+  left: 0;
+}
+
+.fencer.side-right {
+  right: 0;
+}
+
+/* Fencer Name */
+
+.fencer .fencer-name {
+  font-family: overpass, sans-serif;
+  font-weight: 300;
+  font-size: 56px;
+  padding: 60px 16px 0px 16px;
+  height: 180px;
+  text-align: center;
+}
+
+/* Fencer : Score */
+
+.fencer .counter {
+  font-family: overpass-mono, sans-serif;
+  font-weight: 600;
+  margin: auto;
+  bottom: 128px;
+  width: 100%;
+  height: 350px;
+  text-align: center;
+  font-size: 216px;
+  line-height: 350px;
+  padding: 0px;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.fencer.side-left .counter,
+.fencer.side-left .status {
+  left: 72px;
+}
+
+.fencer.side-right .counter,
+.fencer.side-right .status {
+  right: 72px;
+}
+
+/* Cards */
+
+.fencer .cards {
+  margin: auto;
+  width: 100%;
+  height: 80px;
+  text-align: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.fencer.side-left .cards {
+  left: 72px;
+}
+
+.fencer.side-right .cards {
+  right: 72px;
+}
+
+.fencer .cards .card {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 56px;
+  margin: 8px;
+  transition: all 150ms linear;
+  transform: rotateY(90deg);
+}
+
+.fencer .cards .card.shown {
+  transform: rotateY(0deg);
+}
+
+.fencer .cards .card.red {
+  background-color: #ff0000;
+}
+
+.fencer .cards .card.yellow {
+  background-color: #ffff00;
+}
+
+/* Fencer : Doubles */
+
+.fencer .doubles {
+  margin: -64px auto 0 auto;
+  width: 300px;
+  bottom: 116px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.fencer.side-left .doubles {
+  left: 350px;
+}
+
+.fencer.side-right .doubles {
+  right: 350px;
+}
+
+.fencer .doubles .double-item {
+  font-family: overpass, sans-serif;
+  font-weight: 800;
+  opacity: 0;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.fencer .doubles .double-item:hover {
+  background-color: #222222;
+  border-color: #ffffff;
+}
+
+.fencer .doubles .double-item.active {
+  opacity: 1 !important;
+  background-color: #ffd600 !important;
+}
+
+.fencer .status {
+  position: absolute;
+  margin: auto;
+  bottom: 128px;
+  width: calc(100% - 200px);
+  text-align: center;
+  font-size: 42px;
+  text-transform: uppercase;
+  height: 60px;
+  padding: 5px;
+  bottom: 326px;
+  z-index: 1;
+  transform: translateY(60px);
+  transition: all 150ms linear;
+  border-radius: 16px 16px 0px 0px;
+}
+
+.fencer .status.shown {
+  transform: translateY(0px);
+}
+
+.fencer .status.yellow {
+  background-color: #ffff00;
+}
+
+.fencer .status.red {
+  background-color: #ff0000;
+}
+
+.fencer .status.black {
+  background-color: #222222;
+}
+
+.fencer .controls {
+  opacity: 0;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 32px;
+  text-align: center;
+}
+
+.fencer .controls .card {
+  width: 48px;
+  height: 48px;
+  background-color: transparent;
+  border: solid 3px transparent;
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.fencer .controls .card:hover {
+  opacity: 1;
+}
+
+.fencer .controls .card.active {
+  border-color: #0099ff;
+}
+
+.fencer .controls .card.yellow {
+  background-color: #ffff00;
+}
+
+.fencer .controls .card.red {
+  background-color: #cc0000;
+}
+
+.fencer .controls .card.normal {
+  background-color: #000000;
+  border-color: #999999;
+}
+
+/* Main Clock Button */
+
+.main-control-button {
+  display: none;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 32px;
+  font-size: 36px;
+  width: 250px;
+  height: 48px;
+  vertical-align: top;
+  background-color: #000000;
+  border: solid 1px #ffffff;
+  color: #ffffff;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.main-control-button:hover {
+  opacity: 1;
+}
+
+.break-clock-button {
+  display: none;
+  position: absolute;
+  margin: auto;
+  left: 298px;
+  right: 0;
+  bottom: 32px;
+  width: 48px;
+  opacity: 0.75;
+}
+
+.break-clock-button:hover {
+  opacity: 1;
+}
+
+.config-icon {
+  position: absolute;
+  margin: auto;
+  right: 24px;
+  bottom: 32px;
+  opacity: 0.5;
+}
+
+.config-icon:hover {
+  opacity: 1;
+}
+
+.reset-icon {
+  position: absolute;
+  margin: auto;
+  left: 24px;
+  bottom: 32px;
+  opacity: 0.5;
+}
+
+.reset-icon:hover {
+  opacity: 1;
+}
+
+/* Config */
+
+.config {
+  position: absolute;
+  margin: auto;
+  left: 24px;
+  bottom: 24px;
+  width: calc(100% - 48px);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: solid 1px #cccccc;
+  transform: scale(1, 0);
+  transform-origin: 50% 100%;
+  transition: transform 150ms linear;
+  z-index: 10;
+}
+
+.config.shown {
+  transform: scale(1, 1);
+}
+
+.config .config-items {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.config .config-item {
+  flex: 0 0 33.333%;
+  padding: 16px;
+}
+
+.config .config-item > label {
+  display: block;
+}
+
+.config .config-item > input[type='text'] {
+  background-color: #222222;
+  color: #ffffff;
+  padding: 2px;
+  border: solid 1px #cccccc;
+}
+
+.config .config-item > input[type='text']:focus {
+  border-color: #ffcc00;
+}
+
+.config .buttons {
+  text-align: right;
+}
