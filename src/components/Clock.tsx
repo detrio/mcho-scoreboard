@@ -1,4 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback, useRef } from 'react'
+import { ClockStatus, ScoreboardState } from '../reducer'
+import { useSelector, useDispatch, batch } from 'react-redux'
+import {
+  setHours,
+  setMinutes,
+  setSeconds,
+  setTenths,
+  setShowTenths,
+} from '../actions'
 
 interface ClockProps {
   hours?: number
@@ -11,40 +20,98 @@ interface ClockProps {
   onClick: (event: any) => void
 }
 
-export enum ClockStatus {
-  READY = 0,
-  RUNNING = 1,
-  STOPPED = 2,
-}
-
 function Clock(props: ClockProps) {
-  const [hours, setHours] = useState(props.hours || 0)
-  const [minutes, setMinutes] = useState(props.minutes || 0)
-  const [seconds, setSeconds] = useState(props.seconds || 0)
-  const [tenths, setTenths] = useState(0)
-  const [showTenths, setShowTenths] = useState(props.showTenths || false)
-  const [type, setType] = useState(props.type || 'C')
+  const dispatch = useDispatch()
 
-  let timer: NodeJS.Timeout
+  const hours = useSelector((state: ScoreboardState) => state.hours)
+  const minutes = useSelector((state: ScoreboardState) => state.minutes)
+  const seconds = useSelector((state: ScoreboardState) => state.seconds)
+  const tenths = useSelector((state: ScoreboardState) => state.tenths)
+  const showTenths = useSelector((state: ScoreboardState) => state.showTenths)
 
-  const start = () => {
-    reset()
+  const type = props.type || 'C'
+
+  const timerRef = useRef<NodeJS.Timeout>()
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+    }
+  }, [timerRef])
+
+  const resetClock = useCallback(() => {
+    clearTimer()
+
+    batch(() => {
+      dispatch(setHours(0))
+      dispatch(setMinutes(0))
+      dispatch(setSeconds(0))
+      dispatch(setTenths(0))
+    })
+  }, [clearTimer, dispatch])
+
+  const tick = useCallback(() => {
+    clearTimer()
+
+    let newHours = hours
+    let newMinutes = minutes
+    let newSeconds = seconds
+    let newTenths = tenths
+
+    newTenths--
+    if (newTenths < 0) {
+      newTenths = 9
+      newSeconds--
+      if (newSeconds < 0) {
+        newSeconds = 59
+        newMinutes--
+        if (newMinutes < 0) {
+          newHours--
+          newMinutes = 59
+          if (newHours < 0) {
+            newHours = 0
+            newMinutes = 0
+            newSeconds = 0
+            newTenths = 0
+          }
+        }
+      }
+
+      batch(() => {
+        dispatch(setHours(newHours))
+        dispatch(setMinutes(newMinutes))
+        dispatch(setSeconds(newSeconds))
+        dispatch(setTenths(newTenths))
+      })
+
+      if (!done(newHours, newMinutes, newSeconds, newTenths)) {
+        timerRef.current = setTimeout(tick, 100)
+      }
+    } else {
+      batch(() => {
+        dispatch(setHours(newHours))
+        dispatch(setMinutes(newMinutes))
+        dispatch(setSeconds(newSeconds))
+        dispatch(setTenths(newTenths))
+      })
+
+      if (!done(newHours, newMinutes, newSeconds, newTenths)) {
+        timerRef.current = setTimeout(tick, 100)
+      }
+    }
+  }, [clearTimer, dispatch, hours, minutes, seconds, tenths])
+
+  const startClock = useCallback(() => {
+    resetClock()
     tick()
-  }
+  }, [resetClock, tick])
 
-  const stop = () => {
-    clear()
-    if (type === 'W') reset()
-  }
-
-  const reset = () => {
-    clear()
-
-    setHours(props.hours || 0)
-    setMinutes(props.minutes || 0)
-    setSeconds(props.seconds || 0)
-    setTenths(0)
-  }
+  const stop = useCallback(() => {
+    clearTimer()
+    if (type === 'W') {
+      resetClock()
+    }
+  }, [clearTimer, resetClock, type])
 
   const add = (h: number, m: number, s: number) => {
     if (props.status === 1) {
@@ -110,64 +177,11 @@ function Clock(props: ClockProps) {
     setTenths(0)
   }
 
-  const tick = () => {
-    clear()
-
-    let newHours = hours
-    let newMinutes = minutes
-    let newSeconds = seconds
-    let newTenths = tenths
-
-    newTenths--
-    if (newTenths < 0) {
-      newTenths = 9
-      newSeconds--
-      if (newSeconds < 0) {
-        newSeconds = 59
-        newMinutes--
-        if (newMinutes < 0) {
-          newHours--
-          newMinutes = 59
-          if (newHours < 0) {
-            newHours = 0
-            newMinutes = 0
-            newSeconds = 0
-            newTenths = 0
-          }
-        }
-      }
-
-      setHours(newHours)
-      setMinutes(newMinutes)
-      setSeconds(newSeconds)
-      setTenths(newTenths)
-
-      if (!done(newHours, newMinutes, newSeconds, newTenths)) {
-        timer = setTimeout(tick, 100)
-      }
-    } else {
-      setHours(newHours)
-      setMinutes(newMinutes)
-      setSeconds(newSeconds)
-      setTenths(newTenths)
-
-      if (!done(newHours, newMinutes, newSeconds, newTenths)) {
-        timer = setTimeout(tick, 100)
-      }
-    }
-  }
-
   const done = (h: number, m: number, s: number, t: number) => {
     if (h <= 0 && m <= 0 && s <= 0 && t <= 0) {
       return true
     }
     return false
-  }
-
-  const clear = () => {
-    try {
-      clearTimeout(timer)
-    } catch (er) {}
   }
 
   const getText = () => {
@@ -199,22 +213,22 @@ function Clock(props: ClockProps) {
     event.preventDefault()
     event.stopPropagation()
 
-    setShowTenths(!showTenths)
+    dispatch(setShowTenths(!showTenths))
   }
 
   useEffect(() => {
     switch (props.status) {
       case ClockStatus.RUNNING:
-        start()
+        startClock()
         break
       case ClockStatus.STOPPED:
         stop()
         break
       case ClockStatus.READY:
-        reset()
+        resetClock()
         break
     }
-  }, [props.status])
+  }, [props.status, resetClock, startClock, stop])
 
   var classes = ['clock']
   const hr = hours

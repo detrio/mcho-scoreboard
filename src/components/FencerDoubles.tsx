@@ -10,7 +10,7 @@ interface FencerDoublesProps {
 }
 
 function FencerDoubles(props: FencerDoublesProps) {
-  const doubles = new Array(config.maxDoubles).map(double => (
+  const doubles = new Array(config.maxDoublesPerFencer).map(double => (
     <FencerDoubleItem
       key={double}
       index={double + 1}

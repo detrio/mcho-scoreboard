@@ -10,10 +10,8 @@ interface FencerCardsProps {
 function FencerCards(props: FencerCardsProps) {
   return (
     <div className="cards">
-      <>
-        <FencerCard color="red" status={props.red} />
-        <FencerCard color="yellow" status={props.yellow} />
-      </>
+      <FencerCard color="red" status={props.red} />
+      <FencerCard color="yellow" status={props.yellow} />
     </div>
   )
 }

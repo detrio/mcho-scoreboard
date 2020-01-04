@@ -1,57 +1,57 @@
 import React, { useState } from 'react'
+import { batch, useSelector, useDispatch } from 'react-redux'
+import { ScoreboardState } from '../reducer'
+import {
+  changeLeftFencerName,
+  changeConfigVisibility,
+  changeLeftFencerColor,
+  changeRightFencerName,
+  changeRightFencerColor,
+} from '../actions'
 
-export interface FencerDetails {
-  fencerLeftName: string
-  fencerLeftColor: string
-  fencerRightName: string
-  fencerRightColor: string
-}
+function ScoreboardConfig() {
+  const dispatch = useDispatch()
 
-interface ScoreboardConfigProps {
-  values: FencerDetails
-  visible: boolean
-  onSubmit: (fencerDetails: FencerDetails) => void
-  onCancel: () => void
-}
-
-function ScoreboardConfig(props: ScoreboardConfigProps) {
-  const [fencerLeftName, setFencerLeftName] = useState(
-    props.values.fencerLeftName
+  const fencerLeftName = useSelector(
+    (state: ScoreboardState) => state.fencerLeftName
   )
-  const [fencerLeftColor, setFencerLeftColor] = useState(
-    props.values.fencerLeftColor
+  const fencerLeftColor = useSelector(
+    (state: ScoreboardState) => state.fencerLeftColor
   )
-  const [fencerRightName, setFencerRightName] = useState(
-    props.values.fencerRightName
+  const fencerRightName = useSelector(
+    (state: ScoreboardState) => state.fencerRightName
   )
-  const [fencerRightColor, setFencerRightColor] = useState(
-    props.values.fencerRightColor
+  const fencerRightColor = useSelector(
+    (state: ScoreboardState) => state.fencerRightColor
   )
 
-  const onSubmitClick = () => {
-    if (props.onSubmit) {
-      props.onSubmit({
-        fencerLeftName,
-        fencerLeftColor,
-        fencerRightName,
-        fencerRightColor,
-      })
-    }
-  }
+  const configShown = useSelector((state: ScoreboardState) => state.configShown)
 
-  const onCancelClick = () => {
-    if (props.onCancel) {
-      props.onCancel()
-    }
-  }
+  const [currentFencerLeftName, setCurrentFencerLeftName] = useState(
+    fencerLeftName
+  )
+  const [currentFencerLeftColor, setCurrentFencerLeftColor] = useState(
+    fencerLeftColor
+  )
+  const [currentFencerRightName, setCurrentFencerRightName] = useState(
+    fencerRightName
+  )
+  const [currentFencerRightColor, setCurrentFencerRightColor] = useState(
+    fencerRightColor
+  )
 
-  const classes = ['config']
-  if (props.visible) {
-    classes.push('shown')
+  const onSaveConfig = () => {
+    batch(() => {
+      dispatch(changeConfigVisibility(false))
+      dispatch(changeLeftFencerName(currentFencerLeftName))
+      dispatch(changeLeftFencerColor(currentFencerLeftColor))
+      dispatch(changeRightFencerName(currentFencerRightName))
+      dispatch(changeRightFencerColor(currentFencerRightColor))
+    })
   }
 
   return (
-    <div className={classes.join(' ')}>
+    <div className={`config${configShown ? ' shown' : ''}`}>
       <div className="config-items">
         <div className="config-item">
           <label>Left Fencer</label>
@@ -59,16 +59,16 @@ function ScoreboardConfig(props: ScoreboardConfigProps) {
             type="text"
             size={20}
             maxLength={20}
-            value={fencerLeftName}
-            onChange={e => setFencerLeftName(e.target.value)}
+            value={currentFencerLeftName}
+            onChange={e => setCurrentFencerLeftName(e.target.value)}
           />
           <label>Color</label>
           <input
             type="text"
             size={10}
             maxLength={20}
-            value={fencerLeftColor}
-            onChange={e => setFencerLeftColor(e.target.value)}
+            value={currentFencerLeftColor}
+            onChange={e => setCurrentFencerLeftColor(e.target.value)}
           />
         </div>
 
@@ -77,25 +77,28 @@ function ScoreboardConfig(props: ScoreboardConfigProps) {
           <input
             type="text"
             size={20}
-            value={fencerRightName}
-            onChange={e => setFencerRightName(e.target.value)}
+            value={currentFencerRightName}
+            onChange={e => setCurrentFencerRightName(e.target.value)}
           />
           <label>Color</label>
           <input
             type="text"
             size={10}
             maxLength={20}
-            value={fencerRightColor}
-            onChange={e => setFencerRightColor(e.target.value)}
+            value={currentFencerRightColor}
+            onChange={e => setCurrentFencerRightColor(e.target.value)}
           />
         </div>
       </div>
 
       <div className="buttons">
-        <button className="btn" onClick={onSubmitClick}>
+        <button className="btn" onClick={onSaveConfig}>
           Submit
         </button>
-        <button className="btn" onClick={onCancelClick}>
+        <button
+          className="btn"
+          onClick={() => dispatch(changeConfigVisibility(false))}
+        >
           Cancel
         </button>
       </div>

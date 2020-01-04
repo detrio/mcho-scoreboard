@@ -2,11 +2,11 @@ export const config = {
   minScore: -5,
   maxScore: 99,
 
-  allezMinute: 3, //main clock minutes
-  allezSecond: 0, //main clock seconds
+  mainClockMinutes: 3,
+  mainClockSeconds: 0,
 
-  breakSecond: 30, //break clock max seconds
-  maxDoubles: 3, //max doubles per fencer
+  breakClockMaxSeconds: 30,
+  maxDoublesPerFencer: 3,
   boutLabels: ['Start', 'Stop'],
 }
 
@@ -110,4 +110,11 @@ export enum KeyCode {
   CLOSE_BRACKET = 221,
   SINGLE_QUOTE = 222,
   SPACE_BAR = 32,
+}
+
+export function adjustScore(score: number) {
+  const minScore = config.minScore
+  const maxScore = config.maxScore
+
+  return score < minScore ? minScore : score > maxScore ? maxScore : score
 }
