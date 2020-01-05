@@ -40,26 +40,6 @@ export interface SetBoutIndex {
   payload: { index: number }
 }
 
-export interface SetHours {
-  type: 'SET_HOURS'
-  payload: { hours: number }
-}
-
-export interface SetMinutes {
-  type: 'SET_MINUTES'
-  payload: { minutes: number }
-}
-
-export interface SetSeconds {
-  type: 'SET_SECONDS'
-  payload: { seconds: number }
-}
-
-export interface SetTenths {
-  type: 'SET_TENTHS'
-  payload: { tenths: number }
-}
-
 export interface SetShowMainClockTenths {
   type: 'SET_SHOW_MAIN_CLOCK_TENTHS'
   payload: { showTenths: boolean }
@@ -88,16 +68,6 @@ export interface SetMainClockTime {
     seconds: number
     tenths: number
   }
-}
-
-export interface AddToBreakClockTime {
-  type: 'ADD_TO_BREAK_CLOCK_TIME'
-  payload: { hours: number; minutes: number; seconds: number }
-}
-
-export interface SubtractFromBreakClockTime {
-  type: 'SUBTRACT_FROM_BREAK_CLOCK_TIME'
-  payload: { hours: number; minutes: number; seconds: number }
 }
 
 export interface SetBreakClockTime {
@@ -208,6 +178,14 @@ export interface ResetRightFencer {
   type: 'RESET_RIGHT_FENCER'
 }
 
+export interface ResetRightFencerScore {
+  type: 'RESET_RIGHT_FENCER_SCORE'
+}
+
+export interface DecreaseRightFencerScore {
+  type: 'DECREASE_RIGHT_FENCER_SCORE'
+}
+
 export type Action =
   | ChangeLeftFencerName
   | ChangeLeftFencerColor
@@ -217,17 +195,11 @@ export type Action =
   | SetMainClockStatus
   | SetBreakClockStatus
   | SetBoutIndex
-  | SetHours
-  | SetMinutes
-  | SetSeconds
-  | SetTenths
   | SetShowMainClockTenths
   | SetShowBreakClockTenths
   | AddToMainClockTime
   | SubtractFromMainClockTime
   | SetMainClockTime
-  | AddToBreakClockTime
-  | SubtractFromBreakClockTime
   | SetBreakClockTime
   | SetLeftFencerScore
   | ResetLeftFencerScore
@@ -253,3 +225,5 @@ export type Action =
   | ToggleRightFencerRedCard
   | ResetLeftFencer
   | ResetRightFencer
+  | ResetRightFencerScore
+  | DecreaseRightFencerScore

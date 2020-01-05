@@ -7,10 +7,6 @@ import {
   ChangeRightFencerName,
   ChangeRightFencerColor,
   ChangeConfigVisibility,
-  SetHours,
-  SetMinutes,
-  SetSeconds,
-  SetTenths,
   AddToMainClockTime,
   SubtractFromMainClockTime,
   SetMainClockTime,
@@ -40,9 +36,9 @@ import {
   ResetRightFencer,
   SetShowMainClockTenths,
   SetShowBreakClockTenths,
-  AddToBreakClockTime,
-  SubtractFromBreakClockTime,
   SetBreakClockTime,
+  DecreaseRightFencerScore,
+  ResetRightFencerScore,
 } from './types'
 import { ClockStatus } from './reducer'
 
@@ -104,34 +100,6 @@ export function setBoutIndex(index: number): SetBoutIndex {
   }
 }
 
-export function setHours(hours: number): SetHours {
-  return {
-    type: 'SET_HOURS',
-    payload: { hours },
-  }
-}
-
-export function setMinutes(minutes: number): SetMinutes {
-  return {
-    type: 'SET_MINUTES',
-    payload: { minutes },
-  }
-}
-
-export function setSeconds(seconds: number): SetSeconds {
-  return {
-    type: 'SET_SECONDS',
-    payload: { seconds },
-  }
-}
-
-export function setTenths(tenths: number): SetTenths {
-  return {
-    type: 'SET_TENTHS',
-    payload: { tenths },
-  }
-}
-
 export function setShowMainClockTenths(
   showTenths: boolean
 ): SetShowMainClockTenths {
@@ -147,28 +115,6 @@ export function setShowBreakClockTenths(
   return {
     type: 'SET_SHOW_BREAK_CLOCK_TENTHS',
     payload: { showTenths },
-  }
-}
-
-export function addToBreakClockTime(
-  hours: number,
-  minutes: number,
-  seconds: number
-): AddToBreakClockTime {
-  return {
-    type: 'ADD_TO_BREAK_CLOCK_TIME',
-    payload: { hours, minutes, seconds },
-  }
-}
-
-export function subtractFromBreakClockTime(
-  hours: number,
-  minutes: number,
-  seconds: number
-): SubtractFromBreakClockTime {
-  return {
-    type: 'SUBTRACT_FROM_BREAK_CLOCK_TIME',
-    payload: { hours, minutes, seconds },
   }
 }
 
@@ -286,18 +232,10 @@ export function setRightFencerScore(score: number): SetRightFencerScore {
   }
 }
 
-export interface ResetRightFencerScore {
-  type: 'RESET_RIGHT_FENCER_SCORE'
-}
-
 export function resetRightFencerScore(): ResetRightFencerScore {
   return {
     type: 'RESET_RIGHT_FENCER_SCORE',
   }
-}
-
-export interface DecreaseRightFencerScore {
-  type: 'DECREASE_RIGHT_FENCER_SCORE'
 }
 
 export function decreaseRightFencerScore(): DecreaseRightFencerScore {

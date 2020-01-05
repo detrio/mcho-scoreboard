@@ -124,26 +124,6 @@ function rootReducer(state = initialState, action: Action) {
         ...state,
         boutIndex: action.payload.index,
       }
-    case 'SET_HOURS':
-      return {
-        ...state,
-        hours: action.payload.hours,
-      }
-    case 'SET_MINUTES':
-      return {
-        ...state,
-        minutes: action.payload.minutes,
-      }
-    case 'SET_SECONDS':
-      return {
-        ...state,
-        seconds: action.payload.seconds,
-      }
-    case 'SET_TENTHS':
-      return {
-        ...state,
-        tenths: action.payload.tenths,
-      }
     case 'SET_SHOW_MAIN_CLOCK_TENTHS':
       return {
         ...state,
@@ -215,38 +195,6 @@ function rootReducer(state = initialState, action: Action) {
         mainClockMinutes: newMinutes,
         mainClockSeconds: newSeconds,
         mainClockTenths: 0,
-      }
-    }
-    case 'SUBTRACT_FROM_BREAK_CLOCK_TIME': {
-      if (state.breakClockStatus === ClockStatus.RUNNING) {
-        return state
-      }
-
-      let newHours = state.breakClockHours - action.payload.hours
-      let newMinutes = state.breakClockMinutes - action.payload.minutes
-      let newSeconds = state.breakClockSeconds - action.payload.seconds
-
-      if (newSeconds < 0) {
-        newSeconds = 59
-        newMinutes--
-      }
-
-      if (newMinutes < 0) {
-        newSeconds = 0
-        newMinutes = 59
-        newHours--
-      }
-
-      if (newHours < 0) {
-        newHours = 0
-      }
-
-      return {
-        ...state,
-        breakClockHours: newHours,
-        breakClockMinutes: newMinutes,
-        breakClockSeconds: newSeconds,
-        breakClockTenths: 0,
       }
     }
     case 'SET_MAIN_CLOCK_TIME':
