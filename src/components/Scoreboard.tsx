@@ -1,6 +1,6 @@
 import React, { MouseEvent, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Clock from './Clock'
+import MainClock from './MainClock'
 import { config, KeyCode } from '../utils'
 import ScoreboardConfig from './ScoreboardConfig'
 import LeftFencer from './LeftFencer'
@@ -38,6 +38,7 @@ import {
   showRightFencerCards,
 } from '../actions'
 import { ScoreboardState, ClockStatus } from '../reducer'
+import BreakClock from './BreakClock'
 
 function Scoreboard() {
   const dispatch = useDispatch()
@@ -264,16 +265,19 @@ function Scoreboard() {
     }
   }
 
-  const onMainClockClick = (event: any) => {
-    event.stopPropagation()
-    event.preventDefault()
+  const onMainClockClick = useCallback(
+    (event: any) => {
+      event.stopPropagation()
+      event.preventDefault()
 
-    if (event.ctrlKey) {
-      dispatch(setMainClockStatus(ClockStatus.READY))
-    } else {
-      toggleMainClock()
-    }
-  }
+      if (event.ctrlKey) {
+        dispatch(setMainClockStatus(ClockStatus.READY))
+      } else {
+        toggleMainClock()
+      }
+    },
+    [dispatch, toggleMainClock]
+  )
 
   const onBreakClockClick = (event: any) => {
     event.stopPropagation()
@@ -285,19 +289,8 @@ function Scoreboard() {
 
   return (
     <div className="scoreboard" onContextMenu={onRightClickScoreboard}>
-      <Clock
-        className="allez-clock"
-        minutes={config.mainClockMinutes}
-        status={mainClockStatus}
-        onClick={onMainClockClick}
-      />
-      <Clock
-        className="break-clock"
-        minutes={config.breakClockMaxSeconds}
-        type="W"
-        status={breakClockStatus}
-        onClick={onBreakClockClick}
-      />
+      <MainClock onClick={onMainClockClick} />
+      <BreakClock onClick={onBreakClockClick} />
 
       <LeftFencer />
       <RightFencer />

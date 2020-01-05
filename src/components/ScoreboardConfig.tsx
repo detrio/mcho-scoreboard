@@ -13,16 +13,16 @@ function ScoreboardConfig() {
   const dispatch = useDispatch()
 
   const fencerLeftName = useSelector(
-    (state: ScoreboardState) => state.fencerLeftName
+    (state: ScoreboardState) => state.leftFencerName
   )
   const fencerLeftColor = useSelector(
-    (state: ScoreboardState) => state.fencerLeftColor
+    (state: ScoreboardState) => state.leftFencerColor
   )
   const fencerRightName = useSelector(
-    (state: ScoreboardState) => state.fencerRightName
+    (state: ScoreboardState) => state.rightFencerName
   )
   const fencerRightColor = useSelector(
-    (state: ScoreboardState) => state.fencerRightColor
+    (state: ScoreboardState) => state.rightFencerColor
   )
 
   const configShown = useSelector((state: ScoreboardState) => state.configShown)

@@ -57,24 +57,23 @@ function RightFencer() {
           e.stopPropagation()
           dispatch(decreaseRightFencerDoubles())
         }}
-      >
-        <FencerCards yellow={yellowCard} red={redCard} black={blackCard} />
+      />
+      <FencerCards yellow={yellowCard} red={redCard} black={blackCard} />
 
-        <div className="controls">
-          <FencerCardIcon
-            color="yellow"
-            status={yellowCard}
-            title="Yellow Card"
-            onClick={() => dispatch(toggleRightFencerYellowCard())}
-          />
-          <FencerCardIcon
-            color="red"
-            status={redCard}
-            title="Red Card"
-            onClick={() => dispatch(toggleRightFencerRedCard())}
-          />
-        </div>
-      </FencerDoubles>
+      <div className="controls">
+        <FencerCardIcon
+          color="yellow"
+          status={yellowCard}
+          title="Yellow Card"
+          onClick={() => dispatch(toggleRightFencerYellowCard())}
+        />
+        <FencerCardIcon
+          color="red"
+          status={redCard}
+          title="Red Card"
+          onClick={() => dispatch(toggleRightFencerRedCard())}
+        />
+      </div>
     </div>
   )
 }

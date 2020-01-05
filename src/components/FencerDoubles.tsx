@@ -4,7 +4,6 @@ import FencerDoubleItem from './FencerDoubleItem'
 
 interface FencerDoublesProps {
   amount: number
-  children: JSX.Element[]
   onFencerDoubleItemLeftClick: (event: MouseEvent<any>) => void
   onFencerDoubleItemRightClick: (event: MouseEvent<any>) => void
 }

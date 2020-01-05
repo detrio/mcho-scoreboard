@@ -1,6 +1,5 @@
-import { Action } from 'redux'
 import { config } from './utils'
-import { ScoreboardAction } from './types'
+import { Action } from './types'
 
 export enum ClockStatus {
   READY = 0,
@@ -13,18 +12,25 @@ export interface ScoreboardState {
   boutIndex: number
   mainClockStatus: ClockStatus
   breakClockStatus: ClockStatus
-  fencerLeftName: string
-  fencerLeftColor: string
-  fencerRightName: string
-  fencerRightColor: string
+  leftFencerName: string
+  leftFencerColor: string
+  rightFencerName: string
+  rightFencerColor: string
   configShown: boolean
 
-  // clock
-  hours: number
-  minutes: number
-  seconds: number
-  tenths: number
-  showTenths: boolean
+  // Main clock
+  mainClockHours: number
+  mainClockMinutes: number
+  mainClockSeconds: number
+  mainClockTenths: number
+  mainClockShowTenths: boolean
+
+  // Break clock
+  breakClockHours: number
+  breakClockMinutes: number
+  breakClockSeconds: number
+  breakClockTenths: number
+  breakClockShowTenths: boolean
 
   // left fencer
   leftFencerYellowCard: boolean
@@ -45,16 +51,23 @@ const initialState: ScoreboardState = {
   boutIndex: 0,
   mainClockStatus: ClockStatus.READY,
   breakClockStatus: ClockStatus.READY,
-  fencerLeftName: 'LEFT',
-  fencerLeftColor: '#990000',
-  fencerRightName: 'RIGHT',
-  fencerRightColor: '#006699',
+  leftFencerName: 'LEFT',
+  leftFencerColor: '#990000',
+  rightFencerName: 'RIGHT',
+  rightFencerColor: '#006699',
   configShown: false,
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-  tenths: 0,
-  showTenths: false,
+
+  mainClockHours: 0,
+  mainClockMinutes: 3,
+  mainClockSeconds: 0,
+  mainClockTenths: 0,
+  mainClockShowTenths: false,
+
+  breakClockHours: 0,
+  breakClockMinutes: 3,
+  breakClockSeconds: 0,
+  breakClockTenths: 0,
+  breakClockShowTenths: false,
 
   leftFencerYellowCard: false,
   leftFencerRedCard: false,
@@ -69,8 +82,220 @@ const initialState: ScoreboardState = {
   rightFencerDoubles: 0,
 }
 
-function rootReducer(state = initialState, action: Action<ScoreboardAction>) {
+function rootReducer(state = initialState, action: Action) {
   switch (action.type) {
+    case 'CHANGE_LEFT_FENCER_NAME':
+      return {
+        ...state,
+        leftFencerName: action.payload.name,
+      }
+    case 'CHANGE_LEFT_FENCER_COLOR':
+      return {
+        ...state,
+        leftFencerName: action.payload.color,
+      }
+    case 'CHANGE_RIGHT_FENCER_NAME':
+      return {
+        ...state,
+        leftFencerName: action.payload.name,
+      }
+    case 'CHANGE_RIGHT_FENCER_COLOR':
+      return {
+        ...state,
+        leftFencerName: action.payload.color,
+      }
+    case 'CHANGE_CONFIG_VISIBILITY':
+      return {
+        ...state,
+        configShown: action.payload.visibility,
+      }
+    case 'SET_MAIN_CLOCK_STATUS':
+      return {
+        ...state,
+        mainClockStatus: action.payload.status,
+      }
+    case 'SET_BREAK_CLOCK_STATUS':
+      return {
+        ...state,
+        breakClockStatus: action.payload.status,
+      }
+    case 'SET_BOUT_INDEX':
+      return {
+        ...state,
+        boutIndex: action.payload.index,
+      }
+    case 'SET_HOURS':
+      return {
+        ...state,
+        hours: action.payload.hours,
+      }
+    case 'SET_MINUTES':
+      return {
+        ...state,
+        minutes: action.payload.minutes,
+      }
+    case 'SET_SECONDS':
+      return {
+        ...state,
+        seconds: action.payload.seconds,
+      }
+    case 'SET_TENTHS':
+      return {
+        ...state,
+        tenths: action.payload.tenths,
+      }
+    case 'SET_SHOW_MAIN_CLOCK_TENTHS':
+      return {
+        ...state,
+        mainClockShowTenths: action.payload.showTenths,
+      }
+    case 'SET_SHOW_BREAK_CLOCK_TENTHS':
+      return {
+        ...state,
+        breakClockShowTenths: action.payload.showTenths,
+      }
+    case 'ADD_TO_MAIN_CLOCK_TIME': {
+      if (state.mainClockStatus === ClockStatus.RUNNING) {
+        return state
+      }
+
+      let newHours = state.mainClockHours + action.payload.hours
+      let newMinutes = state.mainClockMinutes + action.payload.minutes
+      let newSeconds = state.mainClockSeconds + action.payload.seconds
+
+      if (newSeconds > 59) {
+        newSeconds = 0
+        newMinutes++
+      }
+
+      if (newMinutes > 59) {
+        newMinutes = 0
+        newHours++
+      }
+
+      if (newHours > 23) {
+        newHours = 23
+      }
+
+      return {
+        ...state,
+        mainClockHours: newHours,
+        mainClockMinutes: newMinutes,
+        mainClockSeconds: newSeconds,
+        mainClockTenths: 0,
+      }
+    }
+    case 'SUBTRACT_FROM_MAIN_CLOCK_TIME': {
+      if (state.mainClockStatus === ClockStatus.RUNNING) {
+        return state
+      }
+
+      let newHours = state.mainClockHours - action.payload.hours
+      let newMinutes = state.mainClockMinutes - action.payload.minutes
+      let newSeconds = state.mainClockSeconds - action.payload.seconds
+
+      if (newSeconds < 0) {
+        newSeconds = 59
+        newMinutes--
+      }
+
+      if (newMinutes < 0) {
+        newSeconds = 0
+        newMinutes = 59
+        newHours--
+      }
+
+      if (newHours < 0) {
+        newHours = 0
+      }
+
+      return {
+        ...state,
+        mainClockHours: newHours,
+        mainClockMinutes: newMinutes,
+        mainClockSeconds: newSeconds,
+        mainClockTenths: 0,
+      }
+    }
+    case 'SUBTRACT_FROM_BREAK_CLOCK_TIME': {
+      if (state.breakClockStatus === ClockStatus.RUNNING) {
+        return state
+      }
+
+      let newHours = state.breakClockHours - action.payload.hours
+      let newMinutes = state.breakClockMinutes - action.payload.minutes
+      let newSeconds = state.breakClockSeconds - action.payload.seconds
+
+      if (newSeconds < 0) {
+        newSeconds = 59
+        newMinutes--
+      }
+
+      if (newMinutes < 0) {
+        newSeconds = 0
+        newMinutes = 59
+        newHours--
+      }
+
+      if (newHours < 0) {
+        newHours = 0
+      }
+
+      return {
+        ...state,
+        breakClockHours: newHours,
+        breakClockMinutes: newMinutes,
+        breakClockSeconds: newSeconds,
+        breakClockTenths: 0,
+      }
+    }
+    case 'SET_MAIN_CLOCK_TIME':
+      return {
+        ...state,
+        mainClockHours: action.payload.hours,
+        mainClockMinutes: action.payload.minutes,
+        mainClockSeconds: action.payload.seconds,
+        mainClockTenths: action.payload.tenths,
+      }
+    case 'SET_BREAK_CLOCK_TIME':
+      return {
+        ...state,
+        breakClockHours: action.payload.hours,
+        breakClockMinutes: action.payload.minutes,
+        breakClockSeconds: action.payload.seconds,
+        breakClockTenths: action.payload.tenths,
+      }
+    case 'SET_LEFT_FENCER_SCORE':
+      return {
+        ...state,
+        leftFencerScore: action.payload.score,
+      }
+    case 'RESET_LEFT_FENCER_SCORE':
+      return {
+        ...state,
+        leftFencerScore: 0,
+      }
+    case 'DECREASE_LEFT_FENCER_SCORE':
+      return {
+        ...state,
+        leftFencerScore: state.leftFencerScore - 1,
+      }
+    case 'INCREASE_LEFT_FENCER_SCORE':
+      return {
+        ...state,
+        leftFencerScore: state.leftFencerScore + 1,
+      }
+    case 'RESET_LEFT_FENCER_DOUBLES':
+      return {
+        ...state,
+        leftFencerDoubles: 0,
+      }
+    case 'DECREASE_LEFT_FENCER_DOUBLES':
+      return {
+        ...state,
+        leftFencerDoubles:
+          state.leftFencerDoubles - 1 < 0 ? 0 : state.leftFencerDoubles - 1,
+      }
     case 'INCREASE_LEFT_FENCER_DOUBLES':
       return {
         ...state,
@@ -79,16 +304,11 @@ function rootReducer(state = initialState, action: Action<ScoreboardAction>) {
             ? 0
             : state.leftFencerDoubles + 1,
       }
-    case 'DECREASE_LEFT_FENCER_DOUBLES':
+    case 'RESET_LEFT_FENCER_CARDS':
       return {
         ...state,
-        leftFencerDoubles:
-          state.leftFencerDoubles - 1 < 0 ? 0 : state.leftFencerDoubles - 1,
-      }
-    case 'RESET_LEFT_FENCER_DOUBLES':
-      return {
-        ...state,
-        leftFencerDoubles: 0,
+        leftFencerYellowCard: false,
+        leftFencerRedCard: false,
       }
     case 'SHOW_LEFT_FENCER_CARDS':
       return {
@@ -96,19 +316,46 @@ function rootReducer(state = initialState, action: Action<ScoreboardAction>) {
         leftFencerYellowCard: !state.leftFencerYellowCard,
         leftFencerRedCard: !state.leftFencerRedCard,
       }
-    case 'RESET_LEFT_FENCER_CARDS':
+    case 'SET_RIGHT_FENCER_SCORE':
       return {
         ...state,
-        leftFencerYellowCard: false,
-        leftFencerRedCard: false,
+        rightFencerScore: action.payload.score,
       }
-    case 'RESET_LEFT_FENCER':
+    case 'INCREASE_RIGHT_FENCER_SCORE':
       return {
         ...state,
-        leftFencerYellowCard: false,
-        leftFencerRedCard: false,
-        leftFencerScore: 0,
-        leftFencerDoubles: 0,
+        rightFencerScore: state.rightFencerScore + 1,
+      }
+    case 'RESET_RIGHT_FENCER_DOUBLES':
+      return {
+        ...state,
+        rightFencerDoubles: 0,
+      }
+    case 'DECREASE_RIGHT_FENCER_DOUBLES':
+      return {
+        ...state,
+        rightFencerDoubles:
+          state.rightFencerDoubles - 1 < 0 ? 0 : state.rightFencerDoubles - 1,
+      }
+    case 'INCREASE_RIGHT_FENCER_DOUBLES':
+      return {
+        ...state,
+        rightFencerDoubles:
+          state.rightFencerDoubles + 1 > config.maxDoublesPerFencer
+            ? 0
+            : state.rightFencerDoubles + 1,
+      }
+    case 'RESET_RIGHT_FENCER_CARDS':
+      return {
+        ...state,
+        rightFencerYellowCard: false,
+        rightFencerRedCard: false,
+      }
+    case 'SHOW_RIGHT_FENCER_CARDS':
+      return {
+        ...state,
+        rightFencerYellowCard: !state.rightFencerYellowCard,
+        rightFencerRedCard: !state.rightFencerRedCard,
       }
     case 'TOGGLE_LEFT_FENCER_YELLOW_CARD':
       return {
@@ -119,6 +366,32 @@ function rootReducer(state = initialState, action: Action<ScoreboardAction>) {
       return {
         ...state,
         leftFencerRedCard: state.leftFencerRedCard,
+      }
+    case 'TOGGLE_RIGHT_FENCER_YELLOW_CARD':
+      return {
+        ...state,
+        rightFencerYellowCard: state.rightFencerYellowCard,
+      }
+    case 'TOGGLE_RIGHT_FENCER_RED_CARD':
+      return {
+        ...state,
+        rightFencerRedCard: state.rightFencerRedCard,
+      }
+    case 'RESET_LEFT_FENCER':
+      return {
+        ...state,
+        leftFencerYellowCard: false,
+        leftFencerRedCard: false,
+        leftFencerScore: 0,
+        leftFencerDoubles: 0,
+      }
+    case 'RESET_RIGHT_FENCER':
+      return {
+        ...state,
+        rightFencerYellowCard: false,
+        rightFencerRedCard: false,
+        rightFencerScore: 0,
+        rightFencerDoubles: 0,
       }
     default:
       return state
