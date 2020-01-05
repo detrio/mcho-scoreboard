@@ -17,27 +17,17 @@ import { State } from '../reducers/root.reducer'
 function RightFencer() {
   const dispatch = useDispatch()
 
-  const rightFencerName = useSelector(
-    (state: State) => state.rightFencer.rightFencerName
-  )
+  const rightFencerName = useSelector((state: State) => state.rightFencer.name)
 
   const rightFencerColor = useSelector(
-    (state: State) => state.rightFencer.rightFencerColor
+    (state: State) => state.rightFencer.color
   )
 
-  const yellowCard = useSelector(
-    (state: State) => state.rightFencer.rightFencerYellowCard
-  )
-  const redCard = useSelector(
-    (state: State) => state.rightFencer.rightFencerRedCard
-  )
-  const blackCard = useSelector(
-    (state: State) => state.rightFencer.rightFencerBlackCard
-  )
+  const yellowCard = useSelector((state: State) => state.rightFencer.yellowCard)
+  const redCard = useSelector((state: State) => state.rightFencer.redCard)
+  const blackCard = useSelector((state: State) => state.rightFencer.blackCard)
 
-  const doubles = useSelector(
-    (state: RightFencerState) => state.rightFencerDoubles
-  )
+  const doubles = useSelector((state: RightFencerState) => state.doubles)
 
   return (
     <div

@@ -14,20 +14,12 @@ interface MainClockProps {
 function MainClock(props: MainClockProps) {
   const dispatch = useDispatch()
 
-  const hours = useSelector((state: State) => state.mainClock.mainClockHours)
-  const minutes = useSelector(
-    (state: State) => state.mainClock.mainClockMinutes
-  )
-  const seconds = useSelector(
-    (state: State) => state.mainClock.mainClockSeconds
-  )
-  const tenths = useSelector((state: State) => state.mainClock.mainClockTenths)
-  const showTenths = useSelector(
-    (state: State) => state.mainClock.mainClockShowTenths
-  )
-  const mainClockStatus = useSelector(
-    (state: State) => state.mainClock.mainClockStatus
-  )
+  const hours = useSelector((state: State) => state.mainClock.hours)
+  const minutes = useSelector((state: State) => state.mainClock.minutes)
+  const seconds = useSelector((state: State) => state.mainClock.seconds)
+  const tenths = useSelector((state: State) => state.mainClock.tenths)
+  const showTenths = useSelector((state: State) => state.mainClock.showTenths)
+  const mainClockStatus = useSelector((state: State) => state.mainClock.status)
 
   const timerRef = useRef<NodeJS.Timeout>()
 

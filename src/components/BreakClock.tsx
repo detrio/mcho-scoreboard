@@ -14,21 +14,13 @@ interface BreakClockProps {
 function BreakClock(props: BreakClockProps) {
   const dispatch = useDispatch()
 
-  const hours = useSelector((state: State) => state.breakClock.breakClockHours)
-  const minutes = useSelector(
-    (state: State) => state.breakClock.breakClockMinutes
-  )
-  const seconds = useSelector(
-    (state: State) => state.breakClock.breakClockSeconds
-  )
-  const tenths = useSelector(
-    (state: State) => state.breakClock.breakClockTenths
-  )
-  const showTenths = useSelector(
-    (state: State) => state.breakClock.breakClockShowTenths
-  )
+  const hours = useSelector((state: State) => state.breakClock.hours)
+  const minutes = useSelector((state: State) => state.breakClock.minutes)
+  const seconds = useSelector((state: State) => state.breakClock.seconds)
+  const tenths = useSelector((state: State) => state.breakClock.tenths)
+  const showTenths = useSelector((state: State) => state.breakClock.showTenths)
   const breakClockStatus = useSelector(
-    (state: State) => state.breakClock.breakClockStatus
+    (state: State) => state.breakClock.status
   )
 
   const timerRef = useRef<NodeJS.Timeout>()

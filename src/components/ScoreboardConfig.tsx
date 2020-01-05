@@ -4,7 +4,6 @@ import {
   changeRightFencerName,
   changeRightFencerColor,
 } from '../actions/right-fencer-actions.'
-import { ScoreboardState } from '../reducers/scoreboard.reducer'
 import { changeConfigVisibility } from '../actions/scoreboard.actions'
 import {
   changeLeftFencerName,
@@ -15,17 +14,11 @@ import { State } from '../reducers/root.reducer'
 function ScoreboardConfig() {
   const dispatch = useDispatch()
 
-  const fencerLeftName = useSelector(
-    (state: State) => state.leftFencer.leftFencerName
-  )
-  const fencerLeftColor = useSelector(
-    (state: State) => state.leftFencer.leftFencerColor
-  )
-  const fencerRightName = useSelector(
-    (state: State) => state.rightFencer.rightFencerName
-  )
+  const fencerLeftName = useSelector((state: State) => state.leftFencer.name)
+  const fencerLeftColor = useSelector((state: State) => state.leftFencer.color)
+  const fencerRightName = useSelector((state: State) => state.rightFencer.name)
   const fencerRightColor = useSelector(
-    (state: State) => state.rightFencer.rightFencerColor
+    (state: State) => state.rightFencer.color
   )
 
   const configShown = useSelector(

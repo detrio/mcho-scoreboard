@@ -2,23 +2,23 @@ import { config } from '../utils'
 import { RightFencerAction } from '../actions/right-fencer-actions.'
 
 export interface RightFencerState {
-  rightFencerName: string
-  rightFencerColor: string
-  rightFencerYellowCard: boolean
-  rightFencerRedCard: boolean
-  rightFencerBlackCard: boolean
-  rightFencerScore: number
-  rightFencerDoubles: number
+  name: string
+  color: string
+  yellowCard: boolean
+  redCard: boolean
+  blackCard: boolean
+  score: number
+  doubles: number
 }
 
 const rightFencerState: RightFencerState = {
-  rightFencerName: 'RIGHT',
-  rightFencerColor: '#006699',
-  rightFencerYellowCard: false,
-  rightFencerRedCard: false,
-  rightFencerBlackCard: false,
-  rightFencerScore: 0,
-  rightFencerDoubles: 0,
+  name: 'RIGHT',
+  color: '#006699',
+  yellowCard: false,
+  redCard: false,
+  blackCard: false,
+  score: 0,
+  doubles: 0,
 }
 
 function rightFencerReducer(
@@ -29,74 +29,73 @@ function rightFencerReducer(
     case 'CHANGE_RIGHT_FENCER_NAME':
       return {
         ...state,
-        rightFencerName: action.payload.name,
+        name: action.payload.name,
       }
     case 'CHANGE_RIGHT_FENCER_COLOR':
       return {
         ...state,
-        rightFencerColor: action.payload.color,
+        color: action.payload.color,
       }
 
     case 'SET_RIGHT_FENCER_SCORE':
       return {
         ...state,
-        rightFencerScore: action.payload.score,
+        score: action.payload.score,
       }
     case 'INCREASE_RIGHT_FENCER_SCORE':
       return {
         ...state,
-        rightFencerScore: state.rightFencerScore + 1,
+        score: state.score + 1,
       }
     case 'RESET_RIGHT_FENCER_DOUBLES':
       return {
         ...state,
-        rightFencerDoubles: 0,
+        doubles: 0,
       }
     case 'DECREASE_RIGHT_FENCER_DOUBLES':
       return {
         ...state,
-        rightFencerDoubles:
-          state.rightFencerDoubles - 1 < 0 ? 0 : state.rightFencerDoubles - 1,
+        doubles: state.doubles - 1 < 0 ? 0 : state.doubles - 1,
       }
     case 'INCREASE_RIGHT_FENCER_DOUBLES':
       return {
         ...state,
-        rightFencerDoubles:
-          state.rightFencerDoubles + 1 > config.maxDoublesPerFencer
+        doubles:
+          state.doubles + 1 > config.maxDoublesPerFencer
             ? 0
-            : state.rightFencerDoubles + 1,
+            : state.doubles + 1,
       }
     case 'RESET_RIGHT_FENCER_CARDS':
       return {
         ...state,
-        rightFencerYellowCard: false,
-        rightFencerRedCard: false,
+        yellowCard: false,
+        redCard: false,
       }
     case 'SHOW_RIGHT_FENCER_CARDS':
       return {
         ...state,
-        rightFencerYellowCard: !state.rightFencerYellowCard,
-        rightFencerRedCard: !state.rightFencerRedCard,
+        yellowCard: !state.yellowCard,
+        redCard: !state.redCard,
       }
 
     case 'TOGGLE_RIGHT_FENCER_YELLOW_CARD':
       return {
         ...state,
-        rightFencerYellowCard: !state.rightFencerYellowCard,
+        yellowCard: !state.yellowCard,
       }
     case 'TOGGLE_RIGHT_FENCER_RED_CARD':
       return {
         ...state,
-        rightFencerRedCard: !state.rightFencerRedCard,
+        redCard: !state.redCard,
       }
 
     case 'RESET_RIGHT_FENCER':
       return {
         ...state,
-        rightFencerYellowCard: false,
-        rightFencerRedCard: false,
-        rightFencerScore: 0,
-        rightFencerDoubles: 0,
+        yellowCard: false,
+        redCard: false,
+        score: 0,
+        doubles: 0,
       }
     default:
       return state

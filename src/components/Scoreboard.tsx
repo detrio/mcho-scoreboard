@@ -54,12 +54,10 @@ function Scoreboard() {
     (state: State) => state.scoreboard.configShown
   )
 
-  const mainClockStatus = useSelector(
-    (state: State) => state.mainClock.mainClockStatus
-  )
+  const mainClockStatus = useSelector((state: State) => state.mainClock.status)
 
   const breakClockStatus = useSelector(
-    (state: State) => state.breakClock.breakClockStatus
+    (state: State) => state.breakClock.status
   )
 
   const boutIndex = useSelector((state: State) => state.scoreboard.boutIndex)

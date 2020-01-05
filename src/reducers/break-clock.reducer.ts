@@ -2,21 +2,21 @@ import { ClockStatus } from '../types'
 import { BreakClockAction } from '../actions/break-clock.actions'
 
 export interface BreakClockState {
-  breakClockStatus: ClockStatus
-  breakClockHours: number
-  breakClockMinutes: number
-  breakClockSeconds: number
-  breakClockTenths: number
-  breakClockShowTenths: boolean
+  status: ClockStatus
+  hours: number
+  minutes: number
+  seconds: number
+  tenths: number
+  showTenths: boolean
 }
 
 const breakClockState: BreakClockState = {
-  breakClockStatus: ClockStatus.READY,
-  breakClockHours: 0,
-  breakClockMinutes: 0,
-  breakClockSeconds: 30,
-  breakClockTenths: 0,
-  breakClockShowTenths: false,
+  status: ClockStatus.READY,
+  hours: 0,
+  minutes: 0,
+  seconds: 30,
+  tenths: 0,
+  showTenths: false,
 }
 
 function breakClockReducer(state = breakClockState, action: BreakClockAction) {
@@ -24,20 +24,20 @@ function breakClockReducer(state = breakClockState, action: BreakClockAction) {
     case 'SET_BREAK_CLOCK_STATUS':
       return {
         ...state,
-        breakClockStatus: action.payload.status,
+        status: action.payload.status,
       }
     case 'SET_SHOW_BREAK_CLOCK_TENTHS':
       return {
         ...state,
-        breakClockShowTenths: action.payload.showTenths,
+        showTenths: action.payload.showTenths,
       }
     case 'SET_BREAK_CLOCK_TIME':
       return {
         ...state,
-        breakClockHours: action.payload.hours,
-        breakClockMinutes: action.payload.minutes,
-        breakClockSeconds: action.payload.seconds,
-        breakClockTenths: action.payload.tenths,
+        hours: action.payload.hours,
+        minutes: action.payload.minutes,
+        seconds: action.payload.seconds,
+        tenths: action.payload.tenths,
       }
     default:
       return state

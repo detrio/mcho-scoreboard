@@ -7,7 +7,7 @@ import { State } from '../reducers/root.reducer'
 function LeftFencerCounter() {
   const dispatch = useDispatch()
 
-  const score = useSelector((state: State) => state.leftFencer.leftFencerScore)
+  const score = useSelector((state: State) => state.leftFencer.score)
 
   const setScore = (newAmount: number) => {
     dispatch(setLeftFencerScore(adjustScore(newAmount)))
