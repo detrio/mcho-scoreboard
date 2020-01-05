@@ -92,17 +92,17 @@ function rootReducer(state = initialState, action: Action) {
     case 'CHANGE_LEFT_FENCER_COLOR':
       return {
         ...state,
-        leftFencerName: action.payload.color,
+        leftFencerColor: action.payload.color,
       }
     case 'CHANGE_RIGHT_FENCER_NAME':
       return {
         ...state,
-        leftFencerName: action.payload.name,
+        rightFencerName: action.payload.name,
       }
     case 'CHANGE_RIGHT_FENCER_COLOR':
       return {
         ...state,
-        leftFencerName: action.payload.color,
+        rightFencerColor: action.payload.color,
       }
     case 'CHANGE_CONFIG_VISIBILITY':
       return {
@@ -360,22 +360,22 @@ function rootReducer(state = initialState, action: Action) {
     case 'TOGGLE_LEFT_FENCER_YELLOW_CARD':
       return {
         ...state,
-        leftFencerYellowCard: state.leftFencerYellowCard,
+        leftFencerYellowCard: !state.leftFencerYellowCard,
       }
     case 'TOGGLE_LEFT_FENCER_RED_CARD':
       return {
         ...state,
-        leftFencerRedCard: state.leftFencerRedCard,
+        leftFencerRedCard: !state.leftFencerRedCard,
       }
     case 'TOGGLE_RIGHT_FENCER_YELLOW_CARD':
       return {
         ...state,
-        rightFencerYellowCard: state.rightFencerYellowCard,
+        rightFencerYellowCard: !state.rightFencerYellowCard,
       }
     case 'TOGGLE_RIGHT_FENCER_RED_CARD':
       return {
         ...state,
-        rightFencerRedCard: state.rightFencerRedCard,
+        rightFencerRedCard: !state.rightFencerRedCard,
       }
     case 'RESET_LEFT_FENCER':
       return {

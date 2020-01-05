@@ -9,22 +9,20 @@ interface FencerDoublesProps {
 }
 
 function FencerDoubles(props: FencerDoublesProps) {
-  const doubles = new Array(config.maxDoublesPerFencer).map(double => (
-    <FencerDoubleItem
-      key={double}
-      index={double + 1}
-      amount={props.amount}
-      onFencerDoubleItemLeftClick={props.onFencerDoubleItemLeftClick}
-      onFencerDoubleItemRightClick={props.onFencerDoubleItemRightClick}
-    />
-  ))
+  const doubles = new Array(config.maxDoublesPerFencer)
+    .fill(null)
+    .map((_, idx) => (
+      <FencerDoubleItem
+        key={idx}
+        index={idx + 1}
+        amount={props.amount}
+        onFencerDoubleItemLeftClick={props.onFencerDoubleItemLeftClick}
+        onFencerDoubleItemRightClick={props.onFencerDoubleItemRightClick}
+      />
+    ))
 
   return (
-    <div
-      className="doubles"
-      title="Doubles"
-      onContextMenu={props.onFencerDoubleItemRightClick}
-    >
+    <div className="doubles" title="Doubles">
       {doubles}
     </div>
   )

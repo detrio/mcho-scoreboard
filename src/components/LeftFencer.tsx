@@ -16,6 +16,14 @@ import {
 function LeftFencer() {
   const dispatch = useDispatch()
 
+  const leftFencerName = useSelector(
+    (state: ScoreboardState) => state.leftFencerName
+  )
+
+  const leftFencerColor = useSelector(
+    (state: ScoreboardState) => state.leftFencerColor
+  )
+
   const yellowCard = useSelector(
     (state: ScoreboardState) => state.leftFencerYellowCard
   )
@@ -32,10 +40,10 @@ function LeftFencer() {
 
   return (
     <div
-      className={'fencer side-left'}
-      style={{ background: `linear-gradient(#990000, #000000)` }}
+      className="fencer side-left"
+      style={{ background: `linear-gradient(${leftFencerColor}, #000000)` }}
     >
-      <div className="fencer-name">LEFT</div>
+      <div className="fencer-name">{leftFencerName}</div>
 
       <LeftFencerCounter />
 
@@ -63,16 +71,16 @@ function LeftFencer() {
 
       <div className="controls">
         <FencerCardIcon
-          color="yellow"
-          status={yellowCard}
-          title="Yellow Card"
-          onClick={() => dispatch(toggleLeftFencerYellowCard())}
-        />
-        <FencerCardIcon
           color="red"
           status={redCard}
           title="Red Card"
           onClick={() => dispatch(toggleLeftFencerRedCard())}
+        />
+        <FencerCardIcon
+          color="yellow"
+          status={yellowCard}
+          title="Yellow Card"
+          onClick={() => dispatch(toggleLeftFencerYellowCard())}
         />
       </div>
     </div>
