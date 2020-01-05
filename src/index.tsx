@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createStore, compose } from 'redux'
 import { Provider } from 'react-redux'
-import rootReducer from './reducer'
+import rootReducer from './reducers/root.reducer'
 import './index.css'
 import Scoreboard from './components/Scoreboard'
 

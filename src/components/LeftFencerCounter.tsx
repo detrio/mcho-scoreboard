@@ -1,13 +1,13 @@
 import React from 'react'
 import { adjustScore } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
-import { ScoreboardState } from '../reducer'
-import { setLeftFencerScore } from '../actions'
+import { setLeftFencerScore } from '../actions/left-fencer.action'
+import { State } from '../reducers/root.reducer'
 
 function LeftFencerCounter() {
   const dispatch = useDispatch()
 
-  const score = useSelector((state: ScoreboardState) => state.leftFencerScore)
+  const score = useSelector((state: State) => state.leftFencer.leftFencerScore)
 
   const setScore = (newAmount: number) => {
     dispatch(setLeftFencerScore(adjustScore(newAmount)))

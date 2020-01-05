@@ -1,11 +1,11 @@
 import React, { useEffect, useCallback, useRef } from 'react'
-import { ClockStatus, ScoreboardState } from '../reducer'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  setMainClockTime,
-  setShowBreakClockTenths,
   setBreakClockTime,
-} from '../actions'
+  setShowBreakClockTenths,
+} from '../actions/break-clock.actions'
+import { ClockStatus } from '../types'
+import { State } from '../reducers/root.reducer'
 
 interface BreakClockProps {
   onClick: (event: any) => void
@@ -14,19 +14,21 @@ interface BreakClockProps {
 function BreakClock(props: BreakClockProps) {
   const dispatch = useDispatch()
 
-  const hours = useSelector((state: ScoreboardState) => state.breakClockHours)
+  const hours = useSelector((state: State) => state.breakClock.breakClockHours)
   const minutes = useSelector(
-    (state: ScoreboardState) => state.breakClockMinutes
+    (state: State) => state.breakClock.breakClockMinutes
   )
   const seconds = useSelector(
-    (state: ScoreboardState) => state.breakClockSeconds
+    (state: State) => state.breakClock.breakClockSeconds
   )
-  const tenths = useSelector((state: ScoreboardState) => state.breakClockTenths)
+  const tenths = useSelector(
+    (state: State) => state.breakClock.breakClockTenths
+  )
   const showTenths = useSelector(
-    (state: ScoreboardState) => state.breakClockShowTenths
+    (state: State) => state.breakClock.breakClockShowTenths
   )
   const breakClockStatus = useSelector(
-    (state: ScoreboardState) => state.breakClockStatus
+    (state: State) => state.breakClock.breakClockStatus
   )
 
   const timerRef = useRef<NodeJS.Timeout>()
@@ -72,7 +74,7 @@ function BreakClock(props: BreakClockProps) {
     if (isTimerDone(newHours, newMinutes, newSeconds, newTenths)) {
       clearTimer()
     } else {
-      dispatch(setMainClockTime(newHours, newMinutes, newSeconds, newTenths))
+      dispatch(setBreakClockTime(newHours, newMinutes, newSeconds, newTenths))
     }
   }, [clearTimer, dispatch, hours, minutes, seconds, tenths])
 

@@ -3,29 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import MainClock from './MainClock'
 import { config, KeyCode } from '../utils'
 import ScoreboardConfig from './ScoreboardConfig'
-import LeftFencer from './LeftFencer'
-import RightFencer from './RightFencer'
-import stopWatchIcon from '../icons/stopwatch.png'
-import settingsIcon from '../icons/settings.png'
-import resetIcon from '../icons/reset.png'
 import {
-  changeConfigVisibility,
-  setBreakClockStatus,
-  setMainClockStatus,
   setBoutIndex,
-  addToMainClockTime,
-  subtractFromMainClockTime,
-  setMainClockTime,
-  resetLeftFencerDoubles,
-  decreaseLeftFencerDoubles,
-  increaseLeftFencerDoubles,
-  resetLeftFencerScore,
-  decreaseLeftFencerScore,
-  increaseLeftFencerScore,
-  resetLeftFencerCards,
-  hideLeftFencerCards,
-  showLeftFencerCards,
-  resetLeftFencer,
+  changeConfigVisibility,
+} from '../actions/scoreboard.actions'
+import {
   resetRightFencer,
   resetRightFencerScore,
   decreaseRightFencerScore,
@@ -36,24 +18,51 @@ import {
   resetRightFencerCards,
   hideRightFencerCards,
   showRightFencerCards,
-} from '../actions'
-import { ScoreboardState, ClockStatus } from '../reducer'
+} from '../actions/right-fencer-actions.'
+import {
+  setMainClockStatus,
+  addToMainClockTime,
+  subtractFromMainClockTime,
+  setMainClockTime,
+} from '../actions/main-clock.actions'
+import {
+  resetLeftFencer,
+  resetLeftFencerScore,
+  decreaseLeftFencerScore,
+  increaseLeftFencerScore,
+  resetLeftFencerDoubles,
+  decreaseLeftFencerDoubles,
+  increaseLeftFencerDoubles,
+  resetLeftFencerCards,
+  hideLeftFencerCards,
+  showLeftFencerCards,
+} from '../actions/left-fencer.action'
+import { setBreakClockStatus } from '../actions/break-clock.actions'
 import BreakClock from './BreakClock'
+import LeftFencer from './LeftFencer'
+import RightFencer from './RightFencer'
+import { ClockStatus } from '../types'
+import stopWatchIcon from '../icons/stopwatch.png'
+import settingsIcon from '../icons/settings.png'
+import resetIcon from '../icons/reset.png'
+import { State } from '../reducers/root.reducer'
 
 function Scoreboard() {
   const dispatch = useDispatch()
 
-  const configShown = useSelector((state: ScoreboardState) => state.configShown)
+  const configShown = useSelector(
+    (state: State) => state.scoreboard.configShown
+  )
 
   const mainClockStatus = useSelector(
-    (state: ScoreboardState) => state.mainClockStatus
+    (state: State) => state.mainClock.mainClockStatus
   )
 
   const breakClockStatus = useSelector(
-    (state: ScoreboardState) => state.breakClockStatus
+    (state: State) => state.breakClock.breakClockStatus
   )
 
-  const boutIndex = useSelector((state: ScoreboardState) => state.boutIndex)
+  const boutIndex = useSelector((state: State) => state.scoreboard.boutIndex)
 
   const toggleMainClock = useCallback(() => {
     const index = boutIndex + 1 >= config.boutLabels.length ? 0 : boutIndex + 1

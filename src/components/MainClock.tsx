@@ -1,7 +1,11 @@
 import React, { useEffect, useCallback, useRef } from 'react'
-import { ClockStatus, ScoreboardState } from '../reducer'
 import { useSelector, useDispatch } from 'react-redux'
-import { setMainClockTime, setShowMainClockTenths } from '../actions'
+import {
+  setMainClockTime,
+  setShowMainClockTenths,
+} from '../actions/main-clock.actions'
+import { ClockStatus } from '../types'
+import { State } from '../reducers/root.reducer'
 
 interface MainClockProps {
   onClick: (event: any) => void
@@ -10,19 +14,19 @@ interface MainClockProps {
 function MainClock(props: MainClockProps) {
   const dispatch = useDispatch()
 
-  const hours = useSelector((state: ScoreboardState) => state.mainClockHours)
+  const hours = useSelector((state: State) => state.mainClock.mainClockHours)
   const minutes = useSelector(
-    (state: ScoreboardState) => state.mainClockMinutes
+    (state: State) => state.mainClock.mainClockMinutes
   )
   const seconds = useSelector(
-    (state: ScoreboardState) => state.mainClockSeconds
+    (state: State) => state.mainClock.mainClockSeconds
   )
-  const tenths = useSelector((state: ScoreboardState) => state.mainClockTenths)
+  const tenths = useSelector((state: State) => state.mainClock.mainClockTenths)
   const showTenths = useSelector(
-    (state: ScoreboardState) => state.mainClockShowTenths
+    (state: State) => state.mainClock.mainClockShowTenths
   )
   const mainClockStatus = useSelector(
-    (state: ScoreboardState) => state.mainClockStatus
+    (state: State) => state.mainClock.mainClockStatus
   )
 
   const timerRef = useRef<NodeJS.Timeout>()

@@ -4,38 +4,39 @@ import FencerCards from './FencerCards'
 import FencerDoubles from './FencerDoubles'
 import RightFencerCounter from './RightFencerCounter'
 import { useSelector, useDispatch } from 'react-redux'
-import { ScoreboardState } from '../reducer'
 import {
   resetRightFencerDoubles,
   decreaseRightFencerDoubles,
   increaseRightFencerDoubles,
   toggleRightFencerYellowCard,
   toggleRightFencerRedCard,
-} from '../actions'
+} from '../actions/right-fencer-actions.'
+import { RightFencerState } from '../reducers/right-fencer.reducer'
+import { State } from '../reducers/root.reducer'
 
 function RightFencer() {
   const dispatch = useDispatch()
 
   const rightFencerName = useSelector(
-    (state: ScoreboardState) => state.rightFencerName
+    (state: State) => state.rightFencer.rightFencerName
   )
 
   const rightFencerColor = useSelector(
-    (state: ScoreboardState) => state.rightFencerColor
+    (state: State) => state.rightFencer.rightFencerColor
   )
 
   const yellowCard = useSelector(
-    (state: ScoreboardState) => state.rightFencerYellowCard
+    (state: State) => state.rightFencer.rightFencerYellowCard
   )
   const redCard = useSelector(
-    (state: ScoreboardState) => state.rightFencerRedCard
+    (state: State) => state.rightFencer.rightFencerRedCard
   )
   const blackCard = useSelector(
-    (state: ScoreboardState) => state.rightFencerBlackCard
+    (state: State) => state.rightFencer.rightFencerBlackCard
   )
 
   const doubles = useSelector(
-    (state: ScoreboardState) => state.rightFencerDoubles
+    (state: RightFencerState) => state.rightFencerDoubles
   )
 
   return (
