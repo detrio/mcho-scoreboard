@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   setBreakClockTime,
   setShowBreakClockTenths,
+  setBreakClockStatus,
 } from '../actions/break-clock.actions'
 import { ClockStatus } from '../types'
 import { State } from '../reducers/root.reducer'
@@ -37,6 +38,11 @@ function BreakClock(props: BreakClockProps) {
     dispatch(setBreakClockTime(0, 0, 30))
   }, [clearTimer, dispatch])
 
+  const stopTimer = useCallback(() => {
+    resetClock()
+    setBreakClockStatus(ClockStatus.READY)
+  }, [resetClock])
+
   const tick = useCallback(() => {
     let newHours = hours
     let newMinutes = minutes
@@ -64,22 +70,17 @@ function BreakClock(props: BreakClockProps) {
     }
 
     if (isTimerDone(newHours, newMinutes, newSeconds, newTenths)) {
-      clearTimer()
+      dispatch(setBreakClockStatus(ClockStatus.READY))
     } else {
       dispatch(setBreakClockTime(newHours, newMinutes, newSeconds, newTenths))
     }
-  }, [clearTimer, dispatch, hours, minutes, seconds, tenths])
+  }, [dispatch, hours, minutes, seconds, tenths])
 
   const startClock = useCallback(() => {
     clearTimer()
 
     timerRef.current = setInterval(tick, 100)
   }, [clearTimer, tick])
-
-  const stopTimer = useCallback(() => {
-    clearTimer()
-    resetClock()
-  }, [clearTimer, resetClock])
 
   const isTimerDone = (
     hours: number,
