@@ -1,43 +1,12 @@
 import React, { MouseEvent, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import MainClock from './MainClock'
-import { config, KeyCode } from '../utils'
+import { config } from '../utils'
 import ScoreboardConfig from './ScoreboardConfig'
-import {
-  setBoutIndex,
-  changeConfigVisibility,
-} from '../actions/scoreboard.actions'
-import {
-  resetRightFencer,
-  resetRightFencerScore,
-  decreaseRightFencerScore,
-  increaseRightFencerScore,
-  resetRightFencerDoubles,
-  decreaseRightFencerDoubles,
-  increaseRightFencerDoubles,
-  resetRightFencerCards,
-  hideRightFencerCards,
-  showRightFencerCards,
-} from '../actions/right-fencer-actions.'
-import {
-  setMainClockStatus,
-  addToMainClockTime,
-  subtractFromMainClockTime,
-  setMainClockTime,
-} from '../actions/main-clock.actions'
-import {
-  resetLeftFencer,
-  resetLeftFencerScore,
-  decreaseLeftFencerScore,
-  increaseLeftFencerScore,
-  resetLeftFencerDoubles,
-  decreaseLeftFencerDoubles,
-  increaseLeftFencerDoubles,
-  resetLeftFencerCards,
-  hideLeftFencerCards,
-  showLeftFencerCards,
-} from '../actions/left-fencer.action'
-import { setBreakClockStatus } from '../actions/break-clock.actions'
+import { changeConfigVisibility } from '../actions/scoreboard.actions'
+import { resetRightFencer } from '../actions/right-fencer-actions.'
+import { setMainClockStatus } from '../actions/main-clock.actions'
+import { resetLeftFencer } from '../actions/left-fencer.action'
 import BreakClock from './BreakClock'
 import LeftFencer from './LeftFencer'
 import RightFencer from './RightFencer'
@@ -46,6 +15,8 @@ import stopWatchIcon from '../icons/stopwatch.png'
 import settingsIcon from '../icons/settings.png'
 import resetIcon from '../icons/reset.png'
 import { State } from '../reducers/root.reducer'
+import useKeyboard from '../hooks/keyboard-input.hook'
+import useClock from '../hooks/clock.hook'
 
 function Scoreboard() {
   const dispatch = useDispatch()
@@ -54,217 +25,16 @@ function Scoreboard() {
     (state: State) => state.scoreboard.configShown
   )
 
-  const mainClockStatus = useSelector((state: State) => state.mainClock.status)
-
-  const breakClockStatus = useSelector(
-    (state: State) => state.breakClock.status
-  )
-
   const boutIndex = useSelector((state: State) => state.scoreboard.boutIndex)
-
-  const toggleMainClock = useCallback(() => {
-    const index = boutIndex + 1 >= config.boutLabels.length ? 0 : boutIndex + 1
-    const clockState =
-      mainClockStatus === ClockStatus.STOPPED ||
-      mainClockStatus === ClockStatus.READY
-        ? ClockStatus.RUNNING
-        : ClockStatus.STOPPED
-
-    dispatch(setBoutIndex(index))
-    dispatch(setMainClockStatus(clockState))
-  }, [boutIndex, dispatch, mainClockStatus])
-
-  const toggleBreakClock = useCallback(() => {
-    const newStatus =
-      breakClockStatus === ClockStatus.READY
-        ? ClockStatus.RUNNING
-        : ClockStatus.READY
-
-    dispatch(setBreakClockStatus(newStatus))
-  }, [breakClockStatus, dispatch])
-
-  const resetGame = useCallback(() => {
-    dispatch(resetLeftFencer())
-    dispatch(resetRightFencer())
-  }, [dispatch])
-
-  const handleKeyPress = useCallback(
-    (event: any) => {
-      event.stopPropagation()
-
-      const name = event.target.tagName.toLowerCase()
-
-      //retain normal behavior if focused on an input field
-      switch (name) {
-        case 'input':
-        case 'textarea':
-        case 'select':
-          break
-      }
-
-      switch (event.keyCode) {
-        case KeyCode.SPACE_BAR:
-        case KeyCode.ENTER:
-        case KeyCode.UP:
-        case KeyCode.DOWN:
-        case KeyCode.LEFT:
-        case KeyCode.PERIOD:
-        case KeyCode.RIGHT:
-        case KeyCode.FORWARD_SLASH:
-        case KeyCode.BACK_SLASH:
-        case KeyCode.OPEN_BRACKET:
-        case KeyCode.CLOSE_BRACKET:
-        case KeyCode.SEMICOLON:
-        case KeyCode.SINGLE_QUOTE:
-        case KeyCode.L:
-        case KeyCode.ADD:
-        case KeyCode.SUBTRACT:
-        case KeyCode.MULTIPLY:
-          event.preventDefault()
-          break
-      }
-
-      switch (event.keyCode) {
-        case KeyCode.SPACE_BAR:
-        case KeyCode.ENTER:
-          toggleMainClock()
-          break
-
-        case KeyCode.UP:
-          if (event.ctrlKey) {
-            dispatch(setMainClockStatus(ClockStatus.READY))
-          } else if (event.shiftKey) {
-            dispatch(addToMainClockTime(0, 0, 1))
-          }
-          break
-
-        case KeyCode.ADD:
-          dispatch(addToMainClockTime(0, 0, 1))
-          break
-
-        case KeyCode.SUBTRACT:
-          dispatch(subtractFromMainClockTime(0, 0, 1))
-          break
-
-        case KeyCode.DOWN:
-          if (event.ctrlKey && event.shiftKey) {
-            dispatch(setMainClockStatus(ClockStatus.READY))
-            dispatch(setMainClockTime(0, 0, 1))
-          } else if (event.shiftKey) {
-            dispatch(subtractFromMainClockTime(0, 0, 1))
-          }
-          break
-
-        case KeyCode.LEFT:
-        case KeyCode.PERIOD:
-          if (event.ctrlKey) {
-            dispatch(resetLeftFencerScore())
-          } else if (event.shiftKey) {
-            dispatch(decreaseLeftFencerScore())
-          } else {
-            dispatch(increaseLeftFencerScore())
-          }
-          break
-        case KeyCode.NUM4:
-          dispatch(increaseLeftFencerScore())
-          break
-        case KeyCode.NUM1:
-          dispatch(decreaseLeftFencerScore())
-          break
-
-        case KeyCode.SEMICOLON:
-          if (event.ctrlKey) {
-            dispatch(resetLeftFencerDoubles())
-          } else if (event.shiftKey) {
-            dispatch(decreaseLeftFencerDoubles())
-          } else {
-            dispatch(increaseLeftFencerDoubles())
-          }
-          break
-        case KeyCode.NUM7:
-          dispatch(increaseLeftFencerDoubles())
-          break
-
-        case KeyCode.OPEN_BRACKET:
-          if (event.ctrlKey) {
-            dispatch(resetLeftFencerCards())
-          } else if (event.shiftKey) {
-            dispatch(hideLeftFencerCards())
-          } else {
-            dispatch(showLeftFencerCards())
-          }
-          break
-        case KeyCode.NUM8:
-          dispatch(showLeftFencerCards())
-          break
-
-        case KeyCode.RIGHT:
-        case KeyCode.FORWARD_SLASH:
-          if (event.ctrlKey) {
-            dispatch(resetRightFencerScore())
-          } else if (event.shiftKey) {
-            dispatch(decreaseRightFencerScore())
-          } else {
-            dispatch(increaseRightFencerScore())
-          }
-          break
-        case KeyCode.NUM6:
-          dispatch(increaseRightFencerScore())
-          break
-        case KeyCode.NUM3:
-          dispatch(decreaseRightFencerScore())
-          break
-
-        case KeyCode.SINGLE_QUOTE:
-          if (event.ctrlKey) {
-            dispatch(resetRightFencerDoubles())
-          } else if (event.shiftKey) {
-            dispatch(decreaseRightFencerDoubles())
-          } else {
-            dispatch(increaseRightFencerDoubles())
-          }
-          break
-        case KeyCode.NUM9:
-          dispatch(increaseRightFencerDoubles())
-          break
-
-        case KeyCode.CLOSE_BRACKET:
-          if (event.ctrlKey) {
-            dispatch(resetRightFencerCards())
-          } else if (event.shiftKey) {
-            dispatch(hideRightFencerCards())
-          } else {
-            dispatch(showRightFencerCards())
-          }
-          break
-        case KeyCode.NUM2:
-          dispatch(showRightFencerCards())
-          break
-
-        case KeyCode.L:
-          if (event.ctrlKey && event.shiftKey) {
-            resetGame()
-          }
-          break
-
-        case KeyCode.BACK_SLASH:
-        case KeyCode.MULTIPLY:
-          toggleBreakClock()
-          break
-
-        default:
-          break
-      }
-    },
-    [dispatch, resetGame, toggleBreakClock, toggleMainClock]
-  )
+  const { toggleMainClock, toggleBreakClock } = useClock()
+  const { keyboardInput } = useKeyboard()
 
   useEffect(() => {
-    document.addEventListener('keyup', handleKeyPress)
+    document.addEventListener('keyup', keyboardInput)
     return () => {
-      document.removeEventListener('keyup', handleKeyPress)
+      document.removeEventListener('keyup', keyboardInput)
     }
-  }, [handleKeyPress])
+  }, [keyboardInput])
 
   const onRightClickScoreboard = (event: MouseEvent<any>) => {
     if (!event.shiftKey) {
@@ -292,8 +62,6 @@ function Scoreboard() {
     toggleBreakClock()
   }
 
-  const boutLabel = config.boutLabels[boutIndex]
-
   return (
     <div className="scoreboard" onContextMenu={onRightClickScoreboard}>
       <MainClock onClick={onMainClockClick} />
@@ -307,7 +75,7 @@ function Scoreboard() {
         title="Start/Stop Clock"
         onClick={toggleMainClock}
       >
-        {boutLabel}
+        {config.boutLabels[boutIndex]}
       </button>
 
       <img
@@ -331,7 +99,10 @@ function Scoreboard() {
         src={resetIcon}
         alt="Reset All"
         title="Reset All"
-        onClick={resetGame}
+        onClick={() => {
+          dispatch(resetLeftFencer())
+          dispatch(resetRightFencer())
+        }}
       />
 
       <ScoreboardConfig />
