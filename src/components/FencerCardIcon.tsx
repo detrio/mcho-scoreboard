@@ -1,19 +1,44 @@
 import React from 'react'
+import styled from 'styled-components'
 
 interface FencerCardIconProps {
   color: string
-  status: boolean
-  title: string
+  active: boolean
   onClick: () => void
 }
 
-function FencerCardIcon(props: FencerCardIconProps) {
-  const className = props.status
-    ? `card ${props.color} active`
-    : `card ${props.color}`
+interface FencerCardIconStyles {
+  color: string
+  active: boolean
+}
 
+const StyledFencerCardIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  opacity: 0.75;
+  cursor: pointer;
+  border: solid 3px transparent;
+  background-color: ${(props: FencerCardIconStyles) =>
+    props.color === 'yellow' ? '#ffff00' : '#cc0000'};
+
+  &:hover {
+    opacity: 1;
+  }
+
+  ${(props: FencerCardIconStyles) =>
+    props.active &&
+    `
+      border-color: #0099ff;
+  `}
+`
+
+function FencerCardIcon(props: FencerCardIconProps) {
   return (
-    <button className={className} title={props.title} onClick={props.onClick} />
+    <StyledFencerCardIcon
+      color={props.color}
+      active={props.active}
+      onClick={props.onClick}
+    />
   )
 }
 

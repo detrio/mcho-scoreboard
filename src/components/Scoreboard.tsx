@@ -17,6 +17,15 @@ import resetIcon from '../icons/reset.png'
 import { State } from '../reducers/root.reducer'
 import useKeyboard from '../hooks/keyboard-input.hook'
 import useClock from '../hooks/clock.hook'
+import styled from 'styled-components'
+
+const StyledClockWrapper = styled.div`
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 
 function Scoreboard() {
   const dispatch = useDispatch()
@@ -64,13 +73,14 @@ function Scoreboard() {
 
   return (
     <div className="scoreboard" onContextMenu={onRightClickScoreboard}>
-      <MainClock onClick={onMainClockClick} />
-      <BreakClock onClick={onBreakClockClick} />
-
       <LeftFencer />
+      <StyledClockWrapper>
+        <MainClock onClick={onMainClockClick} />
+        <BreakClock onClick={onBreakClockClick} />
+      </StyledClockWrapper>
       <RightFencer />
 
-      <button
+      {/* <button
         className="main-control-button"
         title="Start/Stop Clock"
         onClick={toggleMainClock}
@@ -105,7 +115,7 @@ function Scoreboard() {
         }}
       />
 
-      <ScoreboardConfig />
+      <ScoreboardConfig /> */}
     </div>
   )
 }

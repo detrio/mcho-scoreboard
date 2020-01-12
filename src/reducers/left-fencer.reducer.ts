@@ -13,7 +13,7 @@ export interface LeftFencerState {
 
 const leftFencerState: LeftFencerState = {
   name: 'LEFT',
-  color: '#990000',
+  color: '#791313',
   yellowCard: false,
   redCard: false,
   blackCard: false,

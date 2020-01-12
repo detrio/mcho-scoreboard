@@ -7,6 +7,7 @@ import {
 } from '../actions/break-clock.actions'
 import { ClockStatus } from '../types'
 import { State } from '../reducers/root.reducer'
+import styled from 'styled-components'
 
 interface BreakClockProps {
   onClick: (event: any) => void
@@ -79,7 +80,7 @@ function BreakClock(props: BreakClockProps) {
   const startClock = useCallback(() => {
     clearTimer()
 
-    timerRef.current = setInterval(tick, 100)
+    timerRef.current = global.setInterval(tick, 100)
   }, [clearTimer, tick])
 
   const isTimerDone = (
@@ -124,15 +125,30 @@ function BreakClock(props: BreakClockProps) {
   }, [breakClockStatus, resetClock, startClock, stopTimer])
 
   return (
-    <div
-      className={`clock break-clock ${breakClockStatus ===
-        ClockStatus.RUNNING && 'running'}`}
+    <StyledBreakClock
+      isRunning={breakClockStatus === ClockStatus.RUNNING}
       onClick={props.onClick}
       onContextMenu={() => dispatch(setShowBreakClockTenths(!showTenths))}
     >
       {clockText()}
-    </div>
+    </StyledBreakClock>
   )
 }
+
+interface BreakClockStyles {
+  isRunning: boolean
+}
+
+const StyledBreakClock = styled.div`
+  width: 300px;
+  text-align: center;
+  font-size: 72px;
+  opacity: ${(props: BreakClockStyles) => (props.isRunning ? 1 : 0.2)};
+  transition: all 50ms linear;
+
+  &:hover {
+    background-color: transparent;
+  }
+`
 
 export default React.memo(BreakClock)

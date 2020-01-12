@@ -3,6 +3,14 @@ import { adjustScore } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { setLeftFencerScore } from '../actions/left-fencer.action'
 import { State } from '../reducers/root.reducer'
+import styled from 'styled-components'
+
+const StyledCounter = styled.div`
+  font-family: overpass-mono, sans-serif;
+  font-weight: bold;
+  font-size: 216px;
+  cursor: pointer;
+`
 
 function LeftFencerCounter() {
   const dispatch = useDispatch()
@@ -46,9 +54,9 @@ function LeftFencerCounter() {
   }
 
   return (
-    <div className="counter" onClick={onClick} onContextMenu={onContextMenu}>
+    <StyledCounter onClick={onClick} onContextMenu={onContextMenu}>
       {score}
-    </div>
+    </StyledCounter>
   )
 }
 

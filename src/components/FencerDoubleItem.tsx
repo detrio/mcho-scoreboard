@@ -1,4 +1,5 @@
 import React, { MouseEvent } from 'react'
+import styled from 'styled-components'
 
 interface FencerDoubleItemProps {
   index: number
@@ -7,18 +8,31 @@ interface FencerDoubleItemProps {
   onFencerDoubleItemRightClick: (event: MouseEvent<any>) => void
 }
 
-function FencerDoubleItem(props: FencerDoubleItemProps) {
-  const className =
-    props.amount >= props.index ? 'double-item active' : 'double-item'
+interface FencerDoubleItemStyleProps {
+  active: boolean
+}
 
+const StyledDoubleItem = styled.div`
+  font-family: overpass, sans-serif;
+  width: 30px;
+  height: 30px;
+  background-color: ${(props: FencerDoubleItemStyleProps) =>
+    props.active ? '#fff' : 'transparent'};
+  cursor: pointer;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #fff;
+  }
+`
+
+function FencerDoubleItem(props: FencerDoubleItemProps) {
   return (
-    <button
-      className={className}
+    <StyledDoubleItem
+      active={props.amount >= props.index}
       onClick={props.onFencerDoubleItemLeftClick}
       onContextMenu={props.onFencerDoubleItemRightClick}
-    >
-      D
-    </button>
+    />
   )
 }
 

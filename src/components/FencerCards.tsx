@@ -1,5 +1,6 @@
 import React from 'react'
 import FencerCard from './FencerCard'
+import styled from 'styled-components'
 
 interface FencerCardsProps {
   red: boolean
@@ -7,12 +8,18 @@ interface FencerCardsProps {
   yellow: boolean
 }
 
+const StyledFencerCards = styled.div`
+  display: flex;
+  width: 220px;
+  justify-content: space-between;
+`
+
 function FencerCards(props: FencerCardsProps) {
   return (
-    <div className="cards">
-      <FencerCard color="red" status={props.red} />
-      <FencerCard color="yellow" status={props.yellow} />
-    </div>
+    <StyledFencerCards>
+      <FencerCard color="yellow" active={props.yellow} />
+      <FencerCard color="red" active={props.red} />
+    </StyledFencerCards>
   )
 }
 

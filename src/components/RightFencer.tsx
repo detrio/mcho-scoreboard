@@ -11,32 +11,30 @@ import {
   toggleRightFencerYellowCard,
   toggleRightFencerRedCard,
 } from '../actions/right-fencer-actions.'
-import { RightFencerState } from '../reducers/right-fencer.reducer'
 import { State } from '../reducers/root.reducer'
+import {
+  StyledFencer,
+  StyledFencerName,
+  StyledCardControls,
+} from './LeftFencer'
 
 function RightFencer() {
   const dispatch = useDispatch()
-
   const rightFencerName = useSelector((state: State) => state.rightFencer.name)
-
   const rightFencerColor = useSelector(
     (state: State) => state.rightFencer.color
   )
-
   const yellowCard = useSelector((state: State) => state.rightFencer.yellowCard)
   const redCard = useSelector((state: State) => state.rightFencer.redCard)
   const blackCard = useSelector((state: State) => state.rightFencer.blackCard)
-
-  const doubles = useSelector((state: RightFencerState) => state.doubles)
+  const doubles = useSelector((state: State) => state.rightFencer.doubles)
 
   return (
-    <div
-      className={'fencer side-right'}
-      style={{ background: `linear-gradient(${rightFencerColor}, #000000)` }}
-    >
-      <div className="fencer-name">{rightFencerName}</div>
+    <StyledFencer color={rightFencerColor}>
+      <StyledFencerName>{rightFencerName}</StyledFencerName>
 
       <RightFencerCounter />
+
       <FencerDoubles
         amount={doubles}
         onFencerDoubleItemLeftClick={e => {
@@ -57,23 +55,22 @@ function RightFencer() {
           dispatch(decreaseRightFencerDoubles())
         }}
       />
+
       <FencerCards yellow={yellowCard} red={redCard} black={blackCard} />
 
-      <div className="controls">
+      <StyledCardControls>
         <FencerCardIcon
           color="red"
-          status={redCard}
-          title="Red Card"
+          active={redCard}
           onClick={() => dispatch(toggleRightFencerRedCard())}
         />
         <FencerCardIcon
           color="yellow"
-          status={yellowCard}
-          title="Yellow Card"
+          active={yellowCard}
           onClick={() => dispatch(toggleRightFencerYellowCard())}
         />
-      </div>
-    </div>
+      </StyledCardControls>
+    </StyledFencer>
   )
 }
 

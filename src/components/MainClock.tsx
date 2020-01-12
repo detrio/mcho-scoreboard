@@ -6,6 +6,7 @@ import {
 } from '../actions/main-clock.actions'
 import { ClockStatus } from '../types'
 import { State } from '../reducers/root.reducer'
+import styled from 'styled-components'
 
 interface MainClockProps {
   onClick: (event: any) => void
@@ -71,7 +72,7 @@ function MainClock(props: MainClockProps) {
   const startClock = useCallback(() => {
     clearTimer()
 
-    timerRef.current = setInterval(tick, 100)
+    timerRef.current = global.setInterval(tick, 100)
   }, [clearTimer, tick])
 
   const isTimerDone = (
@@ -128,14 +129,34 @@ function MainClock(props: MainClockProps) {
     ((tenths <= 0 && seconds === 15) || seconds < 15)
 
   return (
-    <div
-      className={`clock main-clock ${isTimeExpiring ? 'warning' : 'running'}`}
+    <StyledMainClock
+      isTimeExpiring={isTimeExpiring}
       onClick={props.onClick}
       onContextMenu={() => dispatch(setShowMainClockTenths(!showTenths))}
     >
       {clockText()}
-    </div>
+    </StyledMainClock>
   )
 }
+
+interface MainClockStyles {
+  isTimeExpiring: boolean
+}
+
+const StyledMainClock = styled.div`
+  cursor: pointer;
+  transition: color 50ms linear, background-color 150ms linear;
+  font-size: 196px;
+  color: #ffd600;
+  font-family: overpass, sans-serif;
+  font-weight: 400;
+  text-align: center;
+  color: ${(props: MainClockStyles) =>
+    props.isTimeExpiring ? '#ff3333' : '#FFD600 '};
+
+  &:hover {
+    background-color: #222222;
+  }
+`
 
 export default MainClock
