@@ -47,6 +47,11 @@ function rightFencerReducer(
         ...state,
         score: state.score + 1,
       }
+    case 'DECREASE_RIGHT_FENCER_SCORE':
+      return {
+        ...state,
+        score: state.score - 1,
+      }
     case 'RESET_RIGHT_FENCER_DOUBLES':
       return {
         ...state,
