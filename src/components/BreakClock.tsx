@@ -145,6 +145,7 @@ const StyledBreakClock = styled.div`
   font-size: 72px;
   opacity: ${(props: BreakClockStyles) => (props.isRunning ? 1 : 0.2)};
   transition: all 50ms linear;
+  font-family: overpass;
 
   &:hover {
     background-color: transparent;

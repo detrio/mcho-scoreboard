@@ -153,10 +153,6 @@ const StyledMainClock = styled.div`
   text-align: center;
   color: ${(props: MainClockStyles) =>
     props.isTimeExpiring ? '#ff3333' : '#FFD600 '};
-
-  &:hover {
-    background-color: #222222;
-  }
 `
 
 export default MainClock
