@@ -5,17 +5,17 @@ import FencerCards from './FencerCards'
 import FencerDoubles from './FencerDoubles'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  resetLeftFencerDoubles,
-  decreaseLeftFencerDoubles,
-  increaseLeftFencerDoubles,
-  toggleLeftFencerRedCard,
-  toggleLeftFencerYellowCard,
-} from '../actions/left-fencer.action'
+  resetFencerDoubles,
+  decreaseFencerDoubles,
+  increaseFencerDoubles,
+  toggleFencerRedCard,
+  toggleFencerYellowCard,
+} from '../actions/fencer.action'
 import { State } from '../reducers/root.reducer'
 import { FencerSide } from '../types'
 import FencerCounter from './FencerCounter'
 
-export interface FencerProps {
+export interface FencerStyleProps {
   color: string
 }
 
@@ -25,7 +25,10 @@ export const StyledFencer = styled.div`
   justify-content: center;
   flex-direction: column;
   flex-basis: 400px;
-  background: linear-gradient(${(props: FencerProps) => props.color}, #000000);
+  background: linear-gradient(
+    ${(props: FencerStyleProps) => props.color},
+    #000000
+  );
 `
 
 export const StyledFencerName = styled.div`
@@ -42,20 +45,27 @@ export const StyledCardControls = styled.div`
   opacity: 0;
 `
 
-function LeftFencer() {
+interface FencerProps {
+  side: FencerSide
+}
+
+function Fencer(props: FencerProps) {
+  const { side } = props
   const dispatch = useDispatch()
-  const leftFencerName = useSelector((state: State) => state.leftFencer.name)
-  const leftFencerColor = useSelector((state: State) => state.leftFencer.color)
-  const yellowCard = useSelector((state: State) => state.leftFencer.yellowCard)
-  const redCard = useSelector((state: State) => state.leftFencer.redCard)
-  const blackCard = useSelector((state: State) => state.leftFencer.blackCard)
-  const doubles = useSelector((state: State) => state.leftFencer.doubles)
+  const fencerName = useSelector((state: State) => state.fencers[side].name)
+  const fencerColor = useSelector((state: State) => state.fencers[side].color)
+  const yellowCard = useSelector(
+    (state: State) => state.fencers[side].yellowCard
+  )
+  const redCard = useSelector((state: State) => state.fencers[side].redCard)
+  const blackCard = useSelector((state: State) => state.fencers[side].blackCard)
+  const doubles = useSelector((state: State) => state.fencers[side].doubles)
 
   return (
-    <StyledFencer color={leftFencerColor}>
-      <StyledFencerName>{leftFencerName}</StyledFencerName>
+    <StyledFencer color={fencerColor}>
+      <StyledFencerName>{fencerName}</StyledFencerName>
 
-      <FencerCounter side={FencerSide.Left} />
+      <FencerCounter side={side} />
 
       <FencerDoubles
         amount={doubles}
@@ -64,17 +74,17 @@ function LeftFencer() {
           e.preventDefault()
           e.stopPropagation()
           if (e.ctrlKey) {
-            dispatch(resetLeftFencerDoubles())
+            dispatch(resetFencerDoubles(side))
           } else if (e.shiftKey) {
-            dispatch(decreaseLeftFencerDoubles())
+            dispatch(decreaseFencerDoubles(side))
           } else {
-            dispatch(increaseLeftFencerDoubles())
+            dispatch(increaseFencerDoubles(side))
           }
         }}
         onFencerDoubleItemRightClick={e => {
           e.preventDefault()
           e.stopPropagation()
-          dispatch(decreaseLeftFencerDoubles())
+          dispatch(decreaseFencerDoubles(side))
         }}
       />
 
@@ -84,16 +94,16 @@ function LeftFencer() {
         <FencerCardIcon
           color="yellow"
           active={yellowCard}
-          onClick={() => dispatch(toggleLeftFencerYellowCard())}
+          onClick={() => dispatch(toggleFencerYellowCard(props.side))}
         />
         <FencerCardIcon
           color="red"
           active={redCard}
-          onClick={() => dispatch(toggleLeftFencerRedCard())}
+          onClick={() => dispatch(toggleFencerRedCard(props.side))}
         />
       </StyledCardControls>
     </StyledFencer>
   )
 }
 
-export default LeftFencer
+export default Fencer

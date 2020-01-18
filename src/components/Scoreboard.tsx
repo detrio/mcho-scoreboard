@@ -1,16 +1,13 @@
 import React, { MouseEvent, useEffect, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, batch } from 'react-redux'
 import MainClock from './MainClock'
 import { config } from '../utils'
 import ScoreboardConfig from './ScoreboardConfig'
 import { changeConfigVisibility } from '../actions/scoreboard.actions'
-import { resetRightFencer } from '../actions/right-fencer-actions.'
 import { setMainClockStatus } from '../actions/main-clock.actions'
-import { resetLeftFencer } from '../actions/left-fencer.action'
 import BreakClock from './BreakClock'
-import LeftFencer from './LeftFencer'
-import RightFencer from './RightFencer'
-import { ClockStatus } from '../types'
+import Fencer from './Fencer'
+import { ClockStatus, FencerSide } from '../types'
 import stopWatchIcon from '../icons/stopwatch.png'
 import settingsIcon from '../icons/settings.png'
 import resetIcon from '../icons/reset.png'
@@ -18,6 +15,7 @@ import { State } from '../reducers/root.reducer'
 import useKeyboard from '../hooks/keyboard-input.hook'
 import useClock from '../hooks/clock.hook'
 import styled from 'styled-components'
+import { resetFencer } from '../actions/fencer.action'
 
 const StyledClockWrapper = styled.div`
   flex: auto;
@@ -73,14 +71,14 @@ function Scoreboard() {
 
   return (
     <div className="scoreboard" onContextMenu={onRightClickScoreboard}>
-      <LeftFencer />
+      <Fencer side={FencerSide.Left} />
       <StyledClockWrapper>
         <MainClock onClick={onMainClockClick} />
         <BreakClock onClick={onBreakClockClick} />
       </StyledClockWrapper>
-      <RightFencer />
+      <Fencer side={FencerSide.Right} />
 
-      {/* <button
+      <button
         className="main-control-button"
         title="Start/Stop Clock"
         onClick={toggleMainClock}
@@ -110,12 +108,14 @@ function Scoreboard() {
         alt="Reset All"
         title="Reset All"
         onClick={() => {
-          dispatch(resetLeftFencer())
-          dispatch(resetRightFencer())
+          batch(() => {
+            dispatch(resetFencer(FencerSide.Left))
+            dispatch(resetFencer(FencerSide.Right))
+          })
         }}
       />
 
-      <ScoreboardConfig /> */}
+      <ScoreboardConfig />
     </div>
   )
 }

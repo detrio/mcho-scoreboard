@@ -1,24 +1,22 @@
 import React, { useState } from 'react'
 import { batch, useSelector, useDispatch } from 'react-redux'
-import {
-  changeRightFencerName,
-  changeRightFencerColor,
-} from '../actions/right-fencer-actions.'
 import { changeConfigVisibility } from '../actions/scoreboard.actions'
-import {
-  changeLeftFencerName,
-  changeLeftFencerColor,
-} from '../actions/left-fencer.action'
 import { State } from '../reducers/root.reducer'
+import { changeFencerName, changeFencerColor } from '../actions/fencer.action'
+import { FencerSide } from '../types'
 
 function ScoreboardConfig() {
   const dispatch = useDispatch()
 
-  const fencerLeftName = useSelector((state: State) => state.leftFencer.name)
-  const fencerLeftColor = useSelector((state: State) => state.leftFencer.color)
-  const fencerRightName = useSelector((state: State) => state.rightFencer.name)
+  const fencerLeftName = useSelector((state: State) => state.fencers.left.name)
+  const fencerLeftColor = useSelector(
+    (state: State) => state.fencers.left.color
+  )
+  const fencerRightName = useSelector(
+    (state: State) => state.fencers.right.name
+  )
   const fencerRightColor = useSelector(
-    (state: State) => state.rightFencer.color
+    (state: State) => state.fencers.right.color
   )
 
   const configShown = useSelector(
@@ -41,10 +39,10 @@ function ScoreboardConfig() {
   const onSaveConfig = () => {
     batch(() => {
       dispatch(changeConfigVisibility(false))
-      dispatch(changeLeftFencerName(currentFencerLeftName))
-      dispatch(changeLeftFencerColor(currentFencerLeftColor))
-      dispatch(changeRightFencerName(currentFencerRightName))
-      dispatch(changeRightFencerColor(currentFencerRightColor))
+      dispatch(changeFencerName(FencerSide.Left, currentFencerLeftName))
+      dispatch(changeFencerColor(FencerSide.Left, currentFencerLeftColor))
+      dispatch(changeFencerName(FencerSide.Right, currentFencerRightName))
+      dispatch(changeFencerColor(FencerSide.Right, currentFencerRightColor))
     })
   }
 

@@ -7,31 +7,19 @@ import {
   subtractFromMainClockTime,
   setMainClockTime,
 } from '../actions/main-clock.actions'
-import { ClockStatus } from '../types'
+import { ClockStatus, FencerSide } from '../types'
 import {
-  resetLeftFencerScore,
-  decreaseLeftFencerScore,
-  increaseLeftFencerScore,
-  resetLeftFencerDoubles,
-  decreaseLeftFencerDoubles,
-  increaseLeftFencerDoubles,
-  resetLeftFencerCards,
-  hideLeftFencerCards,
-  showLeftFencerCards,
-  resetLeftFencer,
-} from '../actions/left-fencer.action'
-import {
-  resetRightFencerScore,
-  decreaseRightFencerScore,
-  increaseRightFencerScore,
-  resetRightFencerDoubles,
-  decreaseRightFencerDoubles,
-  increaseRightFencerDoubles,
-  resetRightFencerCards,
-  hideRightFencerCards,
-  showRightFencerCards,
-  resetRightFencer,
-} from '../actions/right-fencer-actions.'
+  resetFencerScore,
+  decreaseFencerScore,
+  increaseFencerScore,
+  resetFencerDoubles,
+  decreaseFencerDoubles,
+  increaseFencerDoubles,
+  resetFencerCards,
+  hideFencerCards,
+  showFencerCards,
+  resetFencer,
+} from '../actions/fencer.action'
 import useClock from './clock.hook'
 
 function useKeyboardInput() {
@@ -107,93 +95,93 @@ function useKeyboardInput() {
         case KeyCode.LEFT:
         case KeyCode.PERIOD:
           if (event.ctrlKey) {
-            dispatch(resetLeftFencerScore())
+            dispatch(resetFencerScore(FencerSide.Left))
           } else if (event.shiftKey) {
-            dispatch(decreaseLeftFencerScore())
+            dispatch(decreaseFencerScore(FencerSide.Left))
           } else {
-            dispatch(increaseLeftFencerScore())
+            dispatch(increaseFencerScore(FencerSide.Left))
           }
           break
         case KeyCode.NUM4:
-          dispatch(increaseLeftFencerScore())
+          dispatch(increaseFencerScore(FencerSide.Left))
           break
         case KeyCode.NUM1:
-          dispatch(decreaseLeftFencerScore())
+          dispatch(decreaseFencerScore(FencerSide.Left))
           break
 
         case KeyCode.SEMICOLON:
           if (event.ctrlKey) {
-            dispatch(resetLeftFencerDoubles())
+            dispatch(resetFencerDoubles(FencerSide.Left))
           } else if (event.shiftKey) {
-            dispatch(decreaseLeftFencerDoubles())
+            dispatch(decreaseFencerDoubles(FencerSide.Left))
           } else {
-            dispatch(increaseLeftFencerDoubles())
+            dispatch(increaseFencerDoubles(FencerSide.Left))
           }
           break
         case KeyCode.NUM7:
-          dispatch(increaseLeftFencerDoubles())
+          dispatch(increaseFencerDoubles(FencerSide.Left))
           break
 
         case KeyCode.OPEN_BRACKET:
           if (event.ctrlKey) {
-            dispatch(resetLeftFencerCards())
+            dispatch(resetFencerCards(FencerSide.Left))
           } else if (event.shiftKey) {
-            dispatch(hideLeftFencerCards())
+            dispatch(hideFencerCards(FencerSide.Left))
           } else {
-            dispatch(showLeftFencerCards())
+            dispatch(showFencerCards(FencerSide.Left))
           }
           break
         case KeyCode.NUM8:
-          dispatch(showLeftFencerCards())
+          dispatch(showFencerCards(FencerSide.Left))
           break
 
         case KeyCode.RIGHT:
         case KeyCode.FORWARD_SLASH:
           if (event.ctrlKey) {
-            dispatch(resetRightFencerScore())
+            dispatch(resetFencerScore(FencerSide.Right))
           } else if (event.shiftKey) {
-            dispatch(decreaseRightFencerScore())
+            dispatch(decreaseFencerScore(FencerSide.Right))
           } else {
-            dispatch(increaseRightFencerScore())
+            dispatch(increaseFencerScore(FencerSide.Right))
           }
           break
         case KeyCode.NUM6:
-          dispatch(increaseRightFencerScore())
+          dispatch(increaseFencerScore(FencerSide.Right))
           break
         case KeyCode.NUM3:
-          dispatch(decreaseRightFencerScore())
+          dispatch(decreaseFencerScore(FencerSide.Right))
           break
 
         case KeyCode.SINGLE_QUOTE:
           if (event.ctrlKey) {
-            dispatch(resetRightFencerDoubles())
+            dispatch(resetFencerDoubles(FencerSide.Right))
           } else if (event.shiftKey) {
-            dispatch(decreaseRightFencerDoubles())
+            dispatch(decreaseFencerDoubles(FencerSide.Right))
           } else {
-            dispatch(increaseRightFencerDoubles())
+            dispatch(increaseFencerDoubles(FencerSide.Right))
           }
           break
         case KeyCode.NUM9:
-          dispatch(increaseRightFencerDoubles())
+          dispatch(increaseFencerDoubles(FencerSide.Right))
           break
 
         case KeyCode.CLOSE_BRACKET:
           if (event.ctrlKey) {
-            dispatch(resetRightFencerCards())
+            dispatch(resetFencerCards(FencerSide.Right))
           } else if (event.shiftKey) {
-            dispatch(hideRightFencerCards())
+            dispatch(hideFencerCards(FencerSide.Right))
           } else {
-            dispatch(showRightFencerCards())
+            dispatch(showFencerCards(FencerSide.Right))
           }
           break
         case KeyCode.NUM2:
-          dispatch(showRightFencerCards())
+          dispatch(showFencerCards(FencerSide.Right))
           break
 
         case KeyCode.L:
           if (event.ctrlKey && event.shiftKey) {
-            dispatch(resetLeftFencer())
-            dispatch(resetRightFencer())
+            dispatch(resetFencer(FencerSide.Left))
+            dispatch(resetFencer(FencerSide.Right))
           }
           break
 
