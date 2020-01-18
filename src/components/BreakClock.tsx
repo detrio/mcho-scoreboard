@@ -2,7 +2,6 @@ import React, { useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   setBreakClockTime,
-  setShowBreakClockTenths,
   setBreakClockStatus,
 } from '../actions/break-clock.actions'
 import { ClockStatus } from '../types'
@@ -20,7 +19,6 @@ function BreakClock(props: BreakClockProps) {
   const minutes = useSelector((state: State) => state.breakClock.minutes)
   const seconds = useSelector((state: State) => state.breakClock.seconds)
   const tenths = useSelector((state: State) => state.breakClock.tenths)
-  const showTenths = useSelector((state: State) => state.breakClock.showTenths)
   const breakClockStatus = useSelector(
     (state: State) => state.breakClock.status
   )
@@ -103,9 +101,7 @@ function BreakClock(props: BreakClockProps) {
 
     parts.push(padZeroes(seconds))
 
-    const str = parts.join(':')
-
-    return showTenths ? `${str}.${tenths}` : str
+    return parts.join(':')
   }
 
   const padZeroes = (s: number) => (s < 10 ? '0' : '') + s.toString()
@@ -128,7 +124,6 @@ function BreakClock(props: BreakClockProps) {
     <StyledBreakClock
       isRunning={breakClockStatus === ClockStatus.RUNNING}
       onClick={props.onClick}
-      onContextMenu={() => dispatch(setShowBreakClockTenths(!showTenths))}
     >
       {clockText()}
     </StyledBreakClock>

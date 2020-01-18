@@ -1,9 +1,6 @@
 import React, { useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  setMainClockTime,
-  setShowMainClockTenths,
-} from '../actions/main-clock.actions'
+import { setMainClockTime } from '../actions/main-clock.actions'
 import { ClockStatus } from '../types'
 import { State } from '../reducers/root.reducer'
 import styled from 'styled-components'
@@ -19,7 +16,6 @@ function MainClock(props: MainClockProps) {
   const minutes = useSelector((state: State) => state.mainClock.minutes)
   const seconds = useSelector((state: State) => state.mainClock.seconds)
   const tenths = useSelector((state: State) => state.mainClock.tenths)
-  const showTenths = useSelector((state: State) => state.mainClock.showTenths)
   const mainClockStatus = useSelector((state: State) => state.mainClock.status)
 
   const timerRef = useRef<NodeJS.Timeout>()
@@ -101,9 +97,7 @@ function MainClock(props: MainClockProps) {
 
     parts.push(padZeroes(seconds))
 
-    const str = parts.join(':')
-
-    return showTenths ? `${str}.${tenths}` : str
+    return parts.join(':')
   }
 
   const padZeroes = (s: number) => (s < 10 ? '0' : '') + s.toString()
@@ -129,11 +123,7 @@ function MainClock(props: MainClockProps) {
     ((tenths <= 0 && seconds === 15) || seconds < 15)
 
   return (
-    <StyledMainClock
-      isTimeExpiring={isTimeExpiring}
-      onClick={props.onClick}
-      onContextMenu={() => dispatch(setShowMainClockTenths(!showTenths))}
-    >
+    <StyledMainClock isTimeExpiring={isTimeExpiring} onClick={props.onClick}>
       {clockText()}
     </StyledMainClock>
   )

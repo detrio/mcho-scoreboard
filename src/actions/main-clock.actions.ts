@@ -12,20 +12,6 @@ export function setMainClockStatus(status: ClockStatus): SetMainClockStatus {
   }
 }
 
-export interface SetShowMainClockTenths {
-  type: 'SET_SHOW_MAIN_CLOCK_TENTHS'
-  payload: { showTenths: boolean }
-}
-
-export function setShowMainClockTenths(
-  showTenths: boolean
-): SetShowMainClockTenths {
-  return {
-    type: 'SET_SHOW_MAIN_CLOCK_TENTHS',
-    payload: { showTenths },
-  }
-}
-
 export interface AddToMainClockTime {
   type: 'ADD_TO_MAIN_CLOCK_TIME'
   payload: { hours: number; minutes: number; seconds: number }
@@ -82,7 +68,6 @@ export function setMainClockTime(
 
 export type MainClockAction =
   | SetMainClockStatus
-  | SetShowMainClockTenths
   | AddToMainClockTime
   | SubtractFromMainClockTime
   | SetMainClockTime

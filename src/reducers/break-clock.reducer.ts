@@ -7,7 +7,6 @@ export interface BreakClockState {
   minutes: number
   seconds: number
   tenths: number
-  showTenths: boolean
 }
 
 const breakClockState: BreakClockState = {
@@ -16,7 +15,6 @@ const breakClockState: BreakClockState = {
   minutes: 0,
   seconds: 30,
   tenths: 0,
-  showTenths: false,
 }
 
 function breakClockReducer(state = breakClockState, action: BreakClockAction) {
@@ -25,11 +23,6 @@ function breakClockReducer(state = breakClockState, action: BreakClockAction) {
       return {
         ...state,
         status: action.payload.status,
-      }
-    case 'SET_SHOW_BREAK_CLOCK_TENTHS':
-      return {
-        ...state,
-        showTenths: action.payload.showTenths,
       }
     case 'SET_BREAK_CLOCK_TIME':
       return {

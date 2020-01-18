@@ -7,7 +7,6 @@ export interface MainClockState {
   minutes: number
   seconds: number
   tenths: number
-  showTenths: boolean
 }
 
 const mainClockState: MainClockState = {
@@ -16,7 +15,6 @@ const mainClockState: MainClockState = {
   minutes: 3,
   seconds: 0,
   tenths: 0,
-  showTenths: false,
 }
 
 function mainClockReducer(state = mainClockState, action: MainClockAction) {
@@ -96,11 +94,6 @@ function mainClockReducer(state = mainClockState, action: MainClockAction) {
         minutes: action.payload.minutes,
         seconds: action.payload.seconds,
         tenths: action.payload.tenths,
-      }
-    case 'SET_SHOW_MAIN_CLOCK_TENTHS':
-      return {
-        ...state,
-        showTenths: action.payload.showTenths,
       }
     default:
       return state

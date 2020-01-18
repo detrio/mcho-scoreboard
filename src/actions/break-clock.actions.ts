@@ -12,20 +12,6 @@ export function setBreakClockStatus(status: ClockStatus): SetBreakClockStatus {
   }
 }
 
-export interface SetShowBreakClockTenths {
-  type: 'SET_SHOW_BREAK_CLOCK_TENTHS'
-  payload: { showTenths: boolean }
-}
-
-export function setShowBreakClockTenths(
-  showTenths: boolean
-): SetShowBreakClockTenths {
-  return {
-    type: 'SET_SHOW_BREAK_CLOCK_TENTHS',
-    payload: { showTenths },
-  }
-}
-
 export interface SetBreakClockTime {
   type: 'SET_BREAK_CLOCK_TIME'
   payload: {
@@ -48,7 +34,4 @@ export function setBreakClockTime(
   }
 }
 
-export type BreakClockAction =
-  | SetBreakClockStatus
-  | SetShowBreakClockTenths
-  | SetBreakClockTime
+export type BreakClockAction = SetBreakClockStatus | SetBreakClockTime
