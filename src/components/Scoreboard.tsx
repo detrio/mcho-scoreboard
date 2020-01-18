@@ -9,14 +9,21 @@ import useKeyboard from '../hooks/keyboard-input.hook'
 import useClock from '../hooks/clock.hook'
 import { FencerSide, ClockStatus } from '../types'
 import logo from '../icons/logo.svg'
-import ScoreboardConfig from './ScoreboardConfig'
+import MatchControls from './MatchControls'
 
 const StyledScoreboard = styled.main`
-  position: relative;
-  width: 100%;
   height: 100%;
-  user-select: none;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > section {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    display: flex;
+  }
 `
 
 const StyledClockWrapper = styled.div`
@@ -77,17 +84,19 @@ function Scoreboard() {
       className="scoreboard"
       onContextMenu={onRightClickScoreboard}
     >
-      <Fencer side={FencerSide.Left} />
+      <section>
+        <Fencer side={FencerSide.Left} />
 
-      <StyledClockWrapper>
-        <img src={logo} alt="Logo" />
-        <MainClock onClick={onMainClockClick} />
-        <BreakClock onClick={onBreakClockClick} />
-      </StyledClockWrapper>
+        <StyledClockWrapper>
+          <img src={logo} alt="Logo" />
+          <MainClock onClick={onMainClockClick} />
+          <BreakClock onClick={onBreakClockClick} />
+        </StyledClockWrapper>
 
-      <Fencer side={FencerSide.Right} />
+        <Fencer side={FencerSide.Right} />
+      </section>
 
-      {/* <ScoreboardConfig /> */}
+      <MatchControls />
     </StyledScoreboard>
   )
 }

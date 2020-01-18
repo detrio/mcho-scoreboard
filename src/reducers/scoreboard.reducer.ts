@@ -2,12 +2,10 @@ import { ScoreboardAction } from '../actions/scoreboard.actions'
 
 export interface ScoreboardState {
   boutIndex: number
-  configShown: boolean
 }
 
 const scoreboardState: ScoreboardState = {
   boutIndex: 0,
-  configShown: false,
 }
 
 function scoreboardReducer(state = scoreboardState, action: ScoreboardAction) {
@@ -16,11 +14,6 @@ function scoreboardReducer(state = scoreboardState, action: ScoreboardAction) {
       return {
         ...state,
         boutIndex: action.payload.index,
-      }
-    case 'CHANGE_CONFIG_VISIBILITY':
-      return {
-        ...state,
-        configShown: action.payload.visibility,
       }
     default:
       return state
