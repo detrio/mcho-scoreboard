@@ -2,7 +2,6 @@ import React from 'react'
 import FencerCardIcon from './FencerCardIcon'
 import FencerCards from './FencerCards'
 import FencerDoubles from './FencerDoubles'
-import RightFencerCounter from './RightFencerCounter'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   resetRightFencerDoubles,
@@ -17,6 +16,8 @@ import {
   StyledFencerName,
   StyledCardControls,
 } from './LeftFencer'
+import { FencerSide } from '../types'
+import FencerCounter from './FencerCounter'
 
 function RightFencer() {
   const dispatch = useDispatch()
@@ -33,7 +34,7 @@ function RightFencer() {
     <StyledFencer color={rightFencerColor}>
       <StyledFencerName>{rightFencerName}</StyledFencerName>
 
-      <RightFencerCounter />
+      <FencerCounter side={FencerSide.Right} />
 
       <FencerDoubles
         amount={doubles}

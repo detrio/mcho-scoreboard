@@ -13,6 +13,7 @@ const StyledDoubles = styled.div`
   display: flex;
   justify-content: space-between;
   width: 160px;
+  margin-bottom: 32px;
 `
 
 function FencerDoubles(props: FencerDoublesProps) {

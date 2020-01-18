@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import FencerCardIcon from './FencerCardIcon'
 import FencerCards from './FencerCards'
 import FencerDoubles from './FencerDoubles'
-import LeftFencerCounter from './LeftFencerCounter'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   resetLeftFencerDoubles,
@@ -13,6 +12,8 @@ import {
   toggleLeftFencerYellowCard,
 } from '../actions/left-fencer.action'
 import { State } from '../reducers/root.reducer'
+import { FencerSide } from '../types'
+import FencerCounter from './FencerCounter'
 
 export interface FencerProps {
   color: string
@@ -54,7 +55,7 @@ function LeftFencer() {
     <StyledFencer color={leftFencerColor}>
       <StyledFencerName>{leftFencerName}</StyledFencerName>
 
-      <LeftFencerCounter />
+      <FencerCounter side={FencerSide.Left} />
 
       <FencerDoubles
         amount={doubles}

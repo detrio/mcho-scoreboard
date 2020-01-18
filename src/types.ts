@@ -3,3 +3,8 @@ export enum ClockStatus {
   RUNNING = 1,
   STOPPED = 2,
 }
+
+export enum FencerSide {
+  Right = 'right',
+  Left = 'left',
+}

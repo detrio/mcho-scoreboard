@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { adjustScore } from '../utils'
 import { setRightFencerScore } from '../actions/right-fencer-actions.'
+import { setLeftFencerScore } from '../actions/left-fencer.action'
 import { State } from '../reducers/root.reducer'
+import { FencerSide } from '../types'
 
 const StyledCounter = styled.div`
   font-family: overpass-mono, sans-serif;
@@ -12,13 +14,25 @@ const StyledCounter = styled.div`
   cursor: pointer;
 `
 
-function RightFencerCounter() {
+interface FencerCounterProps {
+  side: FencerSide
+}
+
+function FencerCounter(props: FencerCounterProps) {
   const dispatch = useDispatch()
 
-  const score = useSelector((state: State) => state.rightFencer.score)
+  const score = useSelector((state: State) =>
+    props.side === FencerSide.Right
+      ? state.rightFencer.score
+      : state.leftFencer.score
+  )
 
   const setScore = (newAmount: number) => {
-    dispatch(setRightFencerScore(adjustScore(newAmount)))
+    if (props.side === FencerSide.Right) {
+      dispatch(setRightFencerScore(adjustScore(newAmount)))
+    } else {
+      dispatch(setLeftFencerScore(adjustScore(newAmount)))
+    }
   }
 
   const addToScore = () => {
@@ -60,4 +74,4 @@ function RightFencerCounter() {
   )
 }
 
-export default RightFencerCounter
+export default FencerCounter
