@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 interface FencerCardIconProps {
   color: string
-  active: boolean
+  value: number
   onClick: () => void
 }
 
 interface FencerCardIconStyles {
   color: string
-  active: boolean
+  value: number
 }
 
 const StyledFencerCardIcon = styled.div`
@@ -26,7 +26,7 @@ const StyledFencerCardIcon = styled.div`
   }
 
   ${(props: FencerCardIconStyles) =>
-    props.active &&
+    props.value > 0 &&
     `
       border-color: #0099ff;
   `}
@@ -36,7 +36,7 @@ function FencerCardIcon(props: FencerCardIconProps) {
   return (
     <StyledFencerCardIcon
       color={props.color}
-      active={props.active}
+      value={props.value}
       onClick={props.onClick}
     />
   )

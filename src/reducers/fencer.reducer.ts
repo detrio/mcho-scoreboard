@@ -4,9 +4,8 @@ import { FencerAction } from '../actions/fencer.action'
 export interface FencerState {
   name: string
   color: string
-  yellowCard: boolean
-  redCard: boolean
-  blackCard: boolean
+  yellowCard: 0 | 1 | 2
+  redCard: 0 | 1
   score: number
   doubles: number
 }
@@ -14,9 +13,8 @@ export interface FencerState {
 const leftFencer: FencerState = {
   name: 'Left',
   color: '#791313',
-  yellowCard: false,
-  redCard: false,
-  blackCard: false,
+  yellowCard: 0,
+  redCard: 0,
   score: 0,
   doubles: 0,
 }
@@ -24,9 +22,8 @@ const leftFencer: FencerState = {
 const rightFencer: FencerState = {
   name: 'Right',
   color: '#170E74',
-  yellowCard: false,
-  redCard: false,
-  blackCard: false,
+  yellowCard: 0,
+  redCard: 0,
   score: 0,
   doubles: 0,
 }
@@ -136,20 +133,8 @@ function fencerReducer(state = fencerState, action: FencerAction) {
         ...state,
         [side]: {
           ...state[side],
-          yellowCard: false,
-          redCard: false,
-        },
-      }
-    }
-    case 'SHOW_FENCER_CARDS': {
-      const { side } = action.payload
-
-      return {
-        ...state,
-        [side]: {
-          ...state[side],
-          yellowCard: !state[side].yellowCard,
-          redCard: !state[side].redCard,
+          yellowCard: 0,
+          redCard: 0,
         },
       }
     }
@@ -160,7 +145,7 @@ function fencerReducer(state = fencerState, action: FencerAction) {
         ...state,
         [side]: {
           ...state[side],
-          yellowCard: !state[side].yellowCard,
+          yellowCard: Math.min(state[side].yellowCard + 1, 2),
         },
       }
     }
@@ -171,7 +156,7 @@ function fencerReducer(state = fencerState, action: FencerAction) {
         ...state,
         [side]: {
           ...state[side],
-          redCard: !state[side].redCard,
+          redCard: 1,
         },
       }
     }
@@ -182,8 +167,8 @@ function fencerReducer(state = fencerState, action: FencerAction) {
         ...state,
         [side]: {
           ...state[side],
-          yellowCard: false,
-          redCard: false,
+          yellowCard: 0,
+          redCard: 0,
           score: 0,
           doubles: 0,
         },

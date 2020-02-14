@@ -3,12 +3,12 @@ import styled from 'styled-components'
 
 interface FencerCardProps {
   color: string
-  active: boolean
+  value: number
 }
 
 interface FencerCardStyleProps {
   color: string
-  active: boolean
+  value: number
 }
 
 const StyledCard = styled.div`
@@ -21,7 +21,7 @@ const StyledCard = styled.div`
   cursor: pointer;
   transition: all 150ms linear;
   transform: ${(props: FencerCardStyleProps) =>
-    props.active ? 'rotateY(0deg)' : 'rotateY(90deg)'};
+    props.value > 0 ? 'rotateY(0deg)' : 'rotateY(90deg)'};
   background-color: #111111;
   color: ${(props: FencerCardStyleProps) =>
     props.color === 'yellow' ? '#F2C94C' : '#EB5757'};
@@ -35,8 +35,8 @@ const StyledCard = styled.div`
 
 function FencerCard(props: FencerCardProps) {
   return (
-    <StyledCard color={props.color} active={props.active}>
-      {props.color === 'yellow' ? 2 : 1}
+    <StyledCard color={props.color} value={props.value}>
+      {props.value}
     </StyledCard>
   )
 }

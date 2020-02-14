@@ -58,7 +58,6 @@ function Fencer(props: FencerProps) {
     (state: State) => state.fencers[side].yellowCard
   )
   const redCard = useSelector((state: State) => state.fencers[side].redCard)
-  const blackCard = useSelector((state: State) => state.fencers[side].blackCard)
   const doubles = useSelector((state: State) => state.fencers[side].doubles)
 
   return (
@@ -88,17 +87,17 @@ function Fencer(props: FencerProps) {
         }}
       />
 
-      <FencerCards yellow={yellowCard} red={redCard} black={blackCard} />
+      <FencerCards yellow={yellowCard} red={redCard} />
 
       <StyledCardControls>
         <FencerCardIcon
           color="yellow"
-          active={yellowCard}
+          value={yellowCard}
           onClick={() => dispatch(toggleFencerYellowCard(props.side))}
         />
         <FencerCardIcon
           color="red"
-          active={redCard}
+          value={redCard}
           onClick={() => dispatch(toggleFencerRedCard(props.side))}
         />
       </StyledCardControls>
