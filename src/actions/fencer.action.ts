@@ -129,30 +129,6 @@ export function resetFencerCards(side: FencerSide): ResetFencerCards {
   }
 }
 
-export interface HideFencerCards {
-  type: 'HIDE_FENCER_CARDS'
-  payload: { side: FencerSide }
-}
-
-export function hideFencerCards(side: FencerSide): HideFencerCards {
-  return {
-    type: 'HIDE_FENCER_CARDS',
-    payload: { side },
-  }
-}
-
-export interface ShowFencerCards {
-  type: 'SHOW_FENCER_CARDS'
-  payload: { side: FencerSide }
-}
-
-export function showFencerCards(side: FencerSide): ShowFencerCards {
-  return {
-    type: 'SHOW_FENCER_CARDS',
-    payload: { side },
-  }
-}
-
 export interface ToggleFencerYellowCard {
   type: 'TOGGLE_FENCER_YELLOW_CARD'
   payload: { side: FencerSide }
@@ -202,8 +178,6 @@ export type FencerAction =
   | DecreaseFencerDoubles
   | IncreaseFencerDoubles
   | ResetFencerCards
-  | HideFencerCards
-  | ShowFencerCards
   | ToggleFencerYellowCard
   | ToggleFencerRedCard
   | ResetFencer

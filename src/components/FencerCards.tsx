@@ -3,9 +3,8 @@ import FencerCard from './FencerCard'
 import styled from 'styled-components'
 
 interface FencerCardsProps {
-  red: boolean
-  black: boolean
-  yellow: boolean
+  red: number
+  yellow: number
 }
 
 const StyledFencerCards = styled.div`
@@ -17,8 +16,8 @@ const StyledFencerCards = styled.div`
 function FencerCards(props: FencerCardsProps) {
   return (
     <StyledFencerCards>
-      <FencerCard color="yellow" active={props.yellow} />
-      <FencerCard color="red" active={props.red} />
+      <FencerCard color="yellow" value={props.yellow} />
+      <FencerCard color="red" value={props.red} />
     </StyledFencerCards>
   )
 }

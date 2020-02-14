@@ -16,8 +16,6 @@ import {
   decreaseFencerDoubles,
   increaseFencerDoubles,
   resetFencerCards,
-  hideFencerCards,
-  showFencerCards,
   resetFencer,
 } from '../actions/fencer.action'
 import useClock from './clock.hook'
@@ -125,16 +123,8 @@ function useKeyboardInput() {
         case KeyCode.OPEN_BRACKET:
           if (event.ctrlKey) {
             dispatch(resetFencerCards(FencerSide.Left))
-          } else if (event.shiftKey) {
-            dispatch(hideFencerCards(FencerSide.Left))
-          } else {
-            dispatch(showFencerCards(FencerSide.Left))
           }
           break
-        case KeyCode.NUM8:
-          dispatch(showFencerCards(FencerSide.Left))
-          break
-
         case KeyCode.RIGHT:
         case KeyCode.FORWARD_SLASH:
           if (event.ctrlKey) {
@@ -168,16 +158,8 @@ function useKeyboardInput() {
         case KeyCode.CLOSE_BRACKET:
           if (event.ctrlKey) {
             dispatch(resetFencerCards(FencerSide.Right))
-          } else if (event.shiftKey) {
-            dispatch(hideFencerCards(FencerSide.Right))
-          } else {
-            dispatch(showFencerCards(FencerSide.Right))
           }
           break
-        case KeyCode.NUM2:
-          dispatch(showFencerCards(FencerSide.Right))
-          break
-
         case KeyCode.L:
           if (event.ctrlKey && event.shiftKey) {
             dispatch(resetFencer(FencerSide.Left))
