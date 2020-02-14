@@ -178,11 +178,13 @@ function MatchControls() {
     (state: State) => state.fencers.right.color
   )
 
-  const [currLeftFencerName] = useState(leftFencerName)
+  const [currLeftFencerName, setCurrLeftFencerName] = useState(leftFencerName)
   const [currLeftFencerColor, setCurrLeftFencerColor] = useState(
     leftFencerColor
   )
-  const [currRightFencerName] = useState(rightFencerName)
+  const [currRightFencerName, setCurrRightFencerName] = useState(
+    rightFencerName
+  )
   const [currRightFencerColor, setCurrRightFencerColor] = useState(
     rightFencerColor
   )
@@ -221,6 +223,12 @@ function MatchControls() {
           type="text"
           value={currLeftFencerColor}
           onChange={e => setCurrLeftFencerColor(e.target.value)}
+        />
+        <div>Left Name</div>
+        <input
+          type="text"
+          value={currLeftFencerName}
+          onChange={e => setCurrLeftFencerName(e.target.value)}
         />
       </StyledFencers>
       <StyledTournament>
@@ -267,6 +275,12 @@ function MatchControls() {
             type="text"
             value={currRightFencerColor}
             onChange={e => setCurrRightFencerColor(e.target.value)}
+          />
+          <div>Right Name</div>
+          <input
+            type="text"
+            value={currRightFencerName}
+            onChange={e => setCurrRightFencerName(e.target.value)}
           />
         </StyledDeck>
         <img onClick={toggleSettings} src={gearIcon} alt="Settings" />
