@@ -1,3 +1,5 @@
+import { MatchOutcome, FencerSide } from "./types"
+
 export const config = {
   minScore: -5,
   maxScore: 99,
@@ -117,4 +119,13 @@ export function adjustScore(score: number) {
   const maxScore = config.maxScore
 
   return score < minScore ? minScore : score > maxScore ? maxScore : score
+}
+
+export function resultFromScore(side: FencerSide, leftFencerScore: number, rightFencerScore: number): MatchOutcome {
+  switch (side) {
+    case FencerSide.Left:
+      return leftFencerScore === rightFencerScore ? 'draw' : leftFencerScore > rightFencerScore ? 'win' : 'loss'
+    case FencerSide.Right:
+      return rightFencerScore === leftFencerScore ? 'draw' : rightFencerScore > leftFencerScore ? 'win' : 'loss'
+  }
 }

@@ -1,181 +1,63 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { batch, useSelector, useDispatch } from 'react-redux'
-import styled from 'styled-components'
 import { changeConfigVisibility } from '../actions/scoreboard.actions'
 import { State } from '../reducers/root.reducer'
-import { changeFencerName, changeFencerColor } from '../actions/fencer.action'
-import { FencerSide } from '../types'
+import {
+  changeFencerName,
+  changeFencerColor,
+  setFencerScore,
+} from '../actions/fencer.action'
+import {
+  FencerSide,
+  Tournament,
+  Stage,
+  Group,
+  Match,
+  MatchResult,
+} from '../types'
 import gearIcon from '../icons/gear.svg'
-import downIcon from '../icons/down.svg'
-import greyDownIcon from '../icons/down-grey.svg'
-
-interface StyleProps {
-  background: string
-  foreground: string
-}
-
-const StyledMatchControls = styled.div`
-  position: absolute;
-  bottom: -445px;
-  height: 530px;
-  background-color: #1a1a1a;
-  width: 100%;
-  opacity: 0;
-  transition: 0.5s;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-evenly;
-
-  &:hover {
-    opacity: 1;
-  }
-`
-
-const StyledFencers = styled.div`
-  flex-basis: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-family: overpass;
-  font-size: 16px;
-  padding: 15px 50px;
-
-  > span {
-    font-weight: bold;
-    letter-spacing: 0.15px;
-    color: #fff;
-    background-color: #000;
-    height: 55px;
-    border-radius: 1px;
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  > div {
-    margin: 30px 0 5px 0;
-  }
-
-  > input {
-    background: #000;
-    border: 1px solid #000;
-    height: 55px;
-    color: #fff;
-    font-size: 16px;
-    padding: 20px;
-    max-width: 200px;
-  }
-`
-
-const StyledTournament = styled.div`
-  padding: 15px 50px;
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  > input {
-    margin-bottom: 15px;
-    background: #000;
-    border: 1px solid #000;
-    height: 55px;
-    color: #fff;
-    font-size: 16px;
-    padding: 20px;
-    width: 300px;
-  }
-`
-
-const StyledConfig = styled.div`
-  padding: 15px 50px;
-  flex-basis: 400px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  > img {
-    height: 50px;
-    width: 50px;
-    cursor: pointer;
-    align-self: flex-start;
-  }
-`
-
-const StyledDeck = styled.div`
-  font-family: overpass;
-  display: flex;
-  flex-direction: column;
-
-  > div {
-    margin: 30px 0 5px 0;
-  }
-
-  > input {
-    background: #000;
-    border: 1px solid #000;
-    height: 55px;
-    color: #fff;
-    font-size: 16px;
-    padding: 20px;
-    max-width: 200px;
-  }
-`
-
-const StyledDropdown = styled.div`
-  position: relative;
-  margin-bottom: 15px;
-
-  > input {
-    background: ${(props: StyleProps) => props.background};
-    border: 1px solid #000;
-    height: 55px;
-    color: ${(props: StyleProps) => props.foreground};
-    font-size: 16px;
-    padding: 20px;
-    width: 300px;
-  }
-
-  > img {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-`
-
-const StyledButton = styled.button`
-  height: 55px;
-  font-family: overpass;
-  color: ${(props: StyleProps) => props.foreground};
-  background-color: ${(props: StyleProps) => props.background};
-  width: 300px;
-  border-radius: 1px;
-  border: 1px solid black;
-  font-size: 24px;
-  line-height: 37px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-  font-weight: 500;
-  cursor: pointer;
-`
+import useApi from '../hooks/api.hook'
+import {
+  StyledMatchControls,
+  StyledFencers,
+  StyledTournament,
+  StyledButton,
+  StyledSelect,
+  StyledConfig,
+  StyledDeck,
+} from '../styles'
+import MatchSelectorFencer from './MatchSelectorFencer'
+import CompleteButton from './CompleteButton'
+import { resultFromScore } from '../utils'
 
 function MatchControls() {
   const dispatch = useDispatch()
+  const {
+    requestAccess,
+    getTournaments,
+    getStages,
+    getGroups,
+    getMatches,
+    patchMatch,
+  } = useApi()
   const matchControlsRef = useRef<HTMLDivElement>(null)
 
   const leftFencerName = useSelector((state: State) => state.fencers.left.name)
   const leftFencerColor = useSelector(
     (state: State) => state.fencers.left.color
   )
+  const leftFencerScore = useSelector(
+    (state: State) => state.fencers.left.score
+  )
+
   const rightFencerName = useSelector(
     (state: State) => state.fencers.right.name
   )
   const rightFencerColor = useSelector(
     (state: State) => state.fencers.right.color
+  )
+  const rightFencerScore = useSelector(
+    (state: State) => state.fencers.right.score
   )
 
   const [currLeftFencerName, setCurrLeftFencerName] = useState(leftFencerName)
@@ -188,14 +70,102 @@ function MatchControls() {
   const [currRightFencerColor, setCurrRightFencerColor] = useState(
     rightFencerColor
   )
+  const [tournaments, setTournaments] = useState<Tournament[] | null>(null)
+  const [currTournament, setCurrTournament] = useState('')
+
+  const [stages, setStages] = useState<Stage[] | null>(null)
+  const [currStage, setCurrStage] = useState({
+    id: '',
+    type: '',
+  })
+
+  const [groups, setGroups] = useState<Group[] | null>(null)
+  const [currGroup, setCurrGroup] = useState('')
+
+  const [matches, setMatches] = useState<Match[] | null>(null)
+  const [currMatch, setCurrMatch] = useState('')
+
+  useEffect(() => {
+    requestAccess()
+  }, [requestAccess])
+
+  useEffect(() => {
+    getTournaments().then(maybeTournaments => {
+      if (!maybeTournaments) {
+        setTournaments(null)
+      } else {
+        setTournaments(maybeTournaments)
+      }
+    })
+  }, [getTournaments])
+
+  useEffect(() => {
+    if (currTournament !== '') {
+      getStages(currTournament).then(maybeStages => {
+        if (!maybeStages) {
+          setStages(null)
+        } else {
+          setStages(maybeStages)
+        }
+      })
+    }
+  }, [currTournament, getStages])
+
+  useEffect(() => {
+    if (
+      currStage.id !== '' &&
+      currStage.type === 'pools' &&
+      currTournament !== ''
+    ) {
+      getGroups(currTournament, currStage.id).then(maybeGroups => {
+        if (!maybeGroups) {
+          setGroups(null)
+        } else {
+          setGroups(maybeGroups)
+        }
+      })
+    }
+  }, [currStage, currTournament, getGroups])
+
+  useEffect(() => {
+    if (
+      (currGroup !== '' ||
+        (currStage.type !== '' && currStage.type !== 'pools')) &&
+      currStage.id !== '' &&
+      currTournament !== ''
+    ) {
+      getMatches(currTournament, currStage.id, currGroup).then(
+        (maybeMatches: Match[] | null) => {
+          if (!maybeMatches) {
+            setMatches(null)
+          } else {
+            const defaultMatch =
+              maybeMatches?.find(match => match.status === 'running')?.id ?? ''
+            setCurrMatch(defaultMatch)
+            setMatches(maybeMatches)
+          }
+        }
+      )
+    }
+  }, [currGroup, currStage, currTournament, getMatches])
 
   const onSaveConfig = () => {
+    const match = matches?.find(match => match.id === currMatch)
+    const leftName = match?.opponents[0].participant?.name ?? currLeftFencerName
+    const leftScore = match?.opponents[0].score ?? leftFencerScore
+
+    const rightName =
+      match?.opponents[1].participant?.name ?? currRightFencerName
+    const rightScore = match?.opponents[1].score ?? rightFencerScore
+
     batch(() => {
       dispatch(changeConfigVisibility(false))
-      dispatch(changeFencerName(FencerSide.Left, currLeftFencerName))
+      dispatch(changeFencerName(FencerSide.Left, leftName))
+      dispatch(changeFencerName(FencerSide.Right, rightName))
       dispatch(changeFencerColor(FencerSide.Left, currLeftFencerColor))
-      dispatch(changeFencerName(FencerSide.Right, currRightFencerName))
       dispatch(changeFencerColor(FencerSide.Right, currRightFencerColor))
+      dispatch(setFencerScore(FencerSide.Left, leftScore))
+      dispatch(setFencerScore(FencerSide.Right, rightScore))
     })
 
     toggleSettings()
@@ -211,49 +181,142 @@ function MatchControls() {
     }
   }
 
+  const onCompleteMatch = useCallback(() => {
+    const result: MatchResult[] = [
+      {
+        score: leftFencerScore,
+        result: resultFromScore(
+          FencerSide.Left,
+          leftFencerScore,
+          rightFencerScore
+        ),
+      },
+      {
+        score: rightFencerScore,
+        result: resultFromScore(
+          FencerSide.Right,
+          leftFencerScore,
+          rightFencerScore
+        ),
+      },
+    ]
+
+    patchMatch(currTournament, currMatch, result)
+  }, [currMatch, currTournament, leftFencerScore, patchMatch, rightFencerScore])
+
   return (
     <StyledMatchControls ref={matchControlsRef}>
       <StyledFencers>
-        <span>
-          {leftFencerName} vs {rightFencerName}
-        </span>
+        {currTournament === '' ? (
+          <span style={{ marginBottom: 15 }}>
+            {leftFencerName} vs {rightFencerName}
+          </span>
+        ) : (
+          <StyledSelect
+            id="matches"
+            value={currMatch}
+            disabled={
+              currTournament === '' || currStage.id === '' || currGroup === ''
+            }
+            onChange={e => setCurrMatch(e.currentTarget.value)}
+            style={{ width: 350 }}
+          >
+            {matches?.map(match => (
+              <option
+                disabled={match.status === 'completed'}
+                key={match.id}
+                value={match.id}
+              >
+                {match.opponents[0].participant?.name ?? 'Participant 1'} vs{' '}
+                {match.opponents[1].participant?.name ?? 'Participant 2'} (IP)
+              </option>
+            ))}
+          </StyledSelect>
+        )}
 
-        <div>Left Color</div>
-        <input
-          type="text"
-          value={currLeftFencerColor}
-          onChange={e => setCurrLeftFencerColor(e.target.value)}
-        />
-        <div>Left Name</div>
-        <input
-          type="text"
-          value={currLeftFencerName}
-          onChange={e => setCurrLeftFencerName(e.target.value)}
+        <MatchSelectorFencer
+          isTournamentSelected={currTournament !== ''}
+          side="Left"
+          color={currLeftFencerColor}
+          name={currLeftFencerName}
+          setColor={setCurrLeftFencerColor}
+          setName={setCurrLeftFencerName}
         />
       </StyledFencers>
       <StyledTournament>
-        <StyledButton background="#000" foreground="#4F4F4F">
-          COMPLETE & NEXT
-        </StyledButton>
+        <CompleteButton onComplete={onCompleteMatch} />
+        <StyledSelect
+          id="tournaments"
+          value={currTournament}
+          onChange={e => {
+            setCurrTournament(e.currentTarget.value)
+            setCurrStage({ id: '', type: '' })
+            setStages(null)
+            setCurrGroup('')
+            setGroups(null)
+            setCurrMatch('')
+            setMatches(null)
+          }}
+        >
+          <option value="">Select a Tournament</option>
+          {tournaments?.map(tournament => (
+            <option key={tournament.id} value={tournament.id}>
+              {tournament.name}
+            </option>
+          ))}
+        </StyledSelect>
 
-        <StyledDropdown background="#000" foreground="#fff">
-          <input type="text" defaultValue="Beta 3 Longsword" />
-          <img src={downIcon} alt="Open" />
-        </StyledDropdown>
+        <StyledSelect
+          id="stages"
+          disabled={currTournament === ''}
+          value={currStage.id}
+          onChange={e => {
+            setCurrStage({
+              id: e.currentTarget.value,
+              type:
+                stages?.find(stage => stage.id === e.currentTarget.value)
+                  ?.type ?? '',
+            })
 
-        <StyledDropdown background="#000" foreground="#fff">
-          <input type="text" defaultValue="Group Stage" />
-          <img src={downIcon} alt="Open" />
-        </StyledDropdown>
+            setCurrGroup('')
+            setGroups(null)
+            setCurrMatch('')
+            setMatches(null)
+          }}
+        >
+          <option value="">Select a Stage</option>
+          {stages?.map(stage => (
+            <option key={stage.id} value={stage.id}>
+              {stage.name}
+            </option>
+          ))}
+        </StyledSelect>
 
-        <StyledDropdown background="#828282" foreground="#333333">
-          <input type="text" defaultValue="Group" />
-          <img src={greyDownIcon} alt="Open" />
-        </StyledDropdown>
+        {currStage.type === 'pools' && (
+          <StyledSelect
+            id="groups"
+            disabled={currTournament === '' || currStage.id === ''}
+            value={currGroup}
+            onChange={e => {
+              setCurrGroup(e.currentTarget.value)
+              setCurrMatch('')
+              setMatches(null)
+            }}
+          >
+            <option value="">Select a Group</option>
+            {groups?.map(group => (
+              <option key={group.id} value={group.id}>
+                {group.name}
+              </option>
+            ))}
+          </StyledSelect>
+        )}
 
-        <StyledDropdown background="#fff" foreground="#26292C">
-          <input type="text" defaultValue="Timer (in seconds)" />
-        </StyledDropdown>
+        <input
+          style={{ color: '#000', background: '#fff' }}
+          type="text"
+          placeholder="Timer (in seconds)"
+        />
 
         <StyledButton
           onClick={onSaveConfig}
@@ -270,17 +333,13 @@ function MatchControls() {
             {leftFencerName} vs {rightFencerName}
           </span>
 
-          <div>Right Color</div>
-          <input
-            type="text"
-            value={currRightFencerColor}
-            onChange={e => setCurrRightFencerColor(e.target.value)}
-          />
-          <div>Right Name</div>
-          <input
-            type="text"
-            value={currRightFencerName}
-            onChange={e => setCurrRightFencerName(e.target.value)}
+          <MatchSelectorFencer
+            isTournamentSelected={currTournament !== ''}
+            side="Right"
+            color={currRightFencerColor}
+            name={currRightFencerName}
+            setColor={setCurrRightFencerColor}
+            setName={setCurrRightFencerName}
           />
         </StyledDeck>
         <img onClick={toggleSettings} src={gearIcon} alt="Settings" />
