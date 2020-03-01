@@ -66,6 +66,12 @@ export interface Group {
 
 export type MatchOutcome = 'win' | 'loss' | 'draw'
 
+export enum MatchStatus {
+  Pending = 'pending',
+  Running = 'running',
+  Completed = 'completed',
+}
+
 export interface Fencer {
   number: number
   position: number

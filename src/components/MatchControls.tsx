@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { batch, useSelector, useDispatch } from 'react-redux'
-import { changeConfigVisibility } from '../actions/scoreboard.actions'
 import { State } from '../reducers/root.reducer'
 import {
   changeFencerName,
@@ -14,6 +13,7 @@ import {
   Group,
   Match,
   MatchResult,
+  MatchStatus,
 } from '../types'
 import gearIcon from '../icons/gear.svg'
 import useApi from '../hooks/api.hook'
@@ -29,16 +29,22 @@ import {
 import MatchSelectorFencer from './MatchSelectorFencer'
 import CompleteButton from './CompleteButton'
 import { resultFromScore } from '../utils'
+import {
+  setTournament,
+  setGroup,
+  setStage,
+  setMatch,
+} from '../actions/scoreboard.actions'
 
 function MatchControls() {
   const dispatch = useDispatch()
+  const { completeMatch } = useApi()
   const {
     requestAccess,
     getTournaments,
     getStages,
     getGroups,
     getMatches,
-    patchMatch,
   } = useApi()
   const matchControlsRef = useRef<HTMLDivElement>(null)
 
@@ -59,6 +65,12 @@ function MatchControls() {
   const rightFencerScore = useSelector(
     (state: State) => state.fencers.right.score
   )
+  const tournamentId = useSelector(
+    (state: State) => state.scoreboard.tournamentId
+  )
+  const stage = useSelector((state: State) => state.scoreboard.stage)
+  const groupId = useSelector((state: State) => state.scoreboard.groupId)
+  const matchId = useSelector((state: State) => state.scoreboard.matchId)
 
   const [currLeftFencerName, setCurrLeftFencerName] = useState(leftFencerName)
   const [currLeftFencerColor, setCurrLeftFencerColor] = useState(
@@ -71,19 +83,16 @@ function MatchControls() {
     rightFencerColor
   )
   const [tournaments, setTournaments] = useState<Tournament[] | null>(null)
-  const [currTournament, setCurrTournament] = useState('')
+  const [currTournament, setCurrTournament] = useState(tournamentId)
 
   const [stages, setStages] = useState<Stage[] | null>(null)
-  const [currStage, setCurrStage] = useState({
-    id: '',
-    type: '',
-  })
+  const [currStage, setCurrStage] = useState(stage)
 
   const [groups, setGroups] = useState<Group[] | null>(null)
-  const [currGroup, setCurrGroup] = useState('')
+  const [currGroup, setCurrGroup] = useState(groupId)
 
   const [matches, setMatches] = useState<Match[] | null>(null)
-  const [currMatch, setCurrMatch] = useState('')
+  const [currMatch, setCurrMatch] = useState(matchId)
 
   useEffect(() => {
     requestAccess()
@@ -159,13 +168,16 @@ function MatchControls() {
     const rightScore = match?.opponents[1].score ?? rightFencerScore
 
     batch(() => {
-      dispatch(changeConfigVisibility(false))
       dispatch(changeFencerName(FencerSide.Left, leftName))
       dispatch(changeFencerName(FencerSide.Right, rightName))
       dispatch(changeFencerColor(FencerSide.Left, currLeftFencerColor))
       dispatch(changeFencerColor(FencerSide.Right, currRightFencerColor))
       dispatch(setFencerScore(FencerSide.Left, leftScore))
       dispatch(setFencerScore(FencerSide.Right, rightScore))
+      dispatch(setTournament(currTournament))
+      dispatch(setStage(currStage.id, currStage.type))
+      dispatch(setGroup(currGroup))
+      dispatch(setMatch(currMatch))
     })
 
     toggleSettings()
@@ -201,8 +213,14 @@ function MatchControls() {
       },
     ]
 
-    patchMatch(currTournament, currMatch, result)
-  }, [currMatch, currTournament, leftFencerScore, patchMatch, rightFencerScore])
+    completeMatch(currTournament, currMatch, result)
+  }, [
+    completeMatch,
+    currMatch,
+    currTournament,
+    leftFencerScore,
+    rightFencerScore,
+  ])
 
   return (
     <StyledMatchControls ref={matchControlsRef}>
@@ -228,7 +246,8 @@ function MatchControls() {
                 value={match.id}
               >
                 {match.opponents[0].participant?.name ?? 'Participant 1'} vs{' '}
-                {match.opponents[1].participant?.name ?? 'Participant 2'} (IP)
+                {match.opponents[1].participant?.name ?? 'Participant 2'}{' '}
+                {match.status === MatchStatus.Running && '(IP)'}
               </option>
             ))}
           </StyledSelect>

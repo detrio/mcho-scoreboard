@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { MatchResult } from "../types";
+import { MatchResult, MatchStatus } from "../types";
 
 const LOCAL_STORAGE_VIEW_TOKEN_KEY = 'organizer:view'
 const LOCAL_STORAGE_RESULT_TOKEN_KEY = 'organizer:result'
@@ -12,8 +12,8 @@ const getGroupsUrl = (tournamentId: string, stageId: string) =>
   `https://api.toornament.com/organizer/v2/tournaments/${tournamentId}/groups?stage_ids=${stageId}`
 const getMatchesUrl = (tournamentId: string, stageId: string, groupId: string) => 
   `https://api.toornament.com/organizer/v2/tournaments/${tournamentId}/matches?stage_ids=${stageId}${groupId === '' ? '' : `&group_ids=${groupId}`}`
-const PatchMatchUrl = (tournamentId: string, matchId: string) => 
-  `https://api.toornament.com/organizer/v2/tournaments/${tournamentId}/matches/${matchId}`
+const matchUrl = (tournamentId: string, matchId: string) => 
+  `https://api.toornament.com/organizer/v2/tournaments/${tournamentId}/matches/${matchId}/games/1`
 
 export type RequestAccessParamsKey = 
   | 'grant_type'
@@ -141,14 +141,42 @@ function useApi() {
     }
   }
 
-  const patchMatch = async (tournamentId: string, matchId: string, data: MatchResult[]) => {
-    const response = await fetch(PatchMatchUrl(tournamentId, matchId), {
+  const startMatch = async (tournamentId: string, matchId: string) => {
+    const response = await fetch(matchUrl(tournamentId, matchId), {
       method: 'PATCH',
       headers: {
         'X-Api-Key': process.env.REACT_APP_TOORNAMENT_API_KEY!,
         Authorization: `Bearer ${getResultToken()}`,
       },
-      body: JSON.stringify({ opponents: data }),
+      body: JSON.stringify({
+        status: MatchStatus.Running,
+        opponents: [
+          {
+            number: 1,
+            score: 0,
+          },
+        ]
+      }),
+    })
+
+    if (response.ok) {
+      return await response.json()
+    } else {
+      return null
+    }
+  }
+
+  const completeMatch = async (tournamentId: string, matchId: string, data: MatchResult[]) => {
+    const response = await fetch(matchUrl(tournamentId, matchId), {
+      method: 'PATCH',
+      headers: {
+        'X-Api-Key': process.env.REACT_APP_TOORNAMENT_API_KEY!,
+        Authorization: `Bearer ${getResultToken()}`,
+      },
+      body: JSON.stringify({
+        status: MatchStatus.Completed,
+        opponents: data
+       }),
     })
 
     if (response.ok) {
@@ -164,7 +192,8 @@ function useApi() {
     getStages: useCallback((tournamentId: string) => getStages(tournamentId), []), // eslint-disable-line react-hooks/exhaustive-deps
     getGroups: useCallback((tournamentId: string, stageId: string) => getGroups(tournamentId, stageId), []), // eslint-disable-line react-hooks/exhaustive-deps
     getMatches: useCallback((tournamentId: string, stageId: string, groupId: string) => getMatches(tournamentId, stageId, groupId), []), // eslint-disable-line react-hooks/exhaustive-deps
-    patchMatch: useCallback((tournamentId: string, matchId: string, data: MatchResult[]) => patchMatch(tournamentId, matchId, data), []), // eslint-disable-line react-hooks/exhaustive-deps
+    completeMatch: useCallback((tournamentId: string, matchId: string, data: MatchResult[]) => completeMatch(tournamentId, matchId, data), []), // eslint-disable-line react-hooks/exhaustive-deps
+    startMatch: useCallback((tournamentId: string, matchId: string) => startMatch(tournamentId, matchId), []), // eslint-disable-line react-hooks/exhaustive-deps
   }
 }
 

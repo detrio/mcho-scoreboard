@@ -10,18 +10,55 @@ export function setBoutIndex(index: number): SetBoutIndex {
   }
 }
 
-export interface ChangeConfigVisibility {
-  type: 'CHANGE_CONFIG_VISIBILITY'
-  payload: { visibility: boolean }
+export interface SetTournament {
+  type: 'SET_TOURNAMENT'
+  payload: { tournamentId: string }
 }
 
-export function changeConfigVisibility(
-  visibility: boolean
-): ChangeConfigVisibility {
+export function setTournament(tournamentId: string): SetTournament {
   return {
-    type: 'CHANGE_CONFIG_VISIBILITY',
-    payload: { visibility },
+    type: 'SET_TOURNAMENT',
+    payload: { tournamentId },
+  }
+}
+export interface SetStage {
+  type: 'SET_STAGE'
+  payload: { id: string, type: string }
+}
+
+export function setStage(id: string, type: string): SetStage {
+  return {
+    type: 'SET_STAGE',
+    payload: { id, type },
+  }
+}
+export interface SetGroup {
+  type: 'SET_GROUP'
+  payload: { groupId: string }
+}
+
+export function setGroup(groupId: string): SetGroup {
+  return {
+    type: 'SET_GROUP',
+    payload: { groupId },
   }
 }
 
-export type ScoreboardAction = SetBoutIndex | ChangeConfigVisibility
+export interface SetMatch {
+  type: 'SET_MATCH'
+  payload: { matchId: string }
+}
+
+export function setMatch(matchId: string): SetMatch {
+  return {
+    type: 'SET_MATCH',
+    payload: { matchId },
+  }
+}
+
+export type ScoreboardAction = 
+  | SetBoutIndex
+  | SetTournament
+  | SetStage
+  | SetGroup
+  | SetMatch

@@ -1,5 +1,5 @@
 import React, { MouseEvent, useEffect, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import MainClock from './MainClock'
 import { setMainClockStatus } from '../actions/main-clock.actions'
@@ -7,9 +7,11 @@ import BreakClock from './BreakClock'
 import Fencer from './Fencer'
 import useKeyboard from '../hooks/keyboard-input.hook'
 import useClock from '../hooks/clock.hook'
+import useApi from '../hooks/api.hook'
 import { FencerSide, ClockStatus } from '../types'
 import logo from '../icons/logo.svg'
 import MatchControls from './MatchControls'
+import { State } from '../reducers/root.reducer'
 
 const StyledScoreboard = styled.main`
   height: 100%;
@@ -44,7 +46,13 @@ function Scoreboard() {
   const dispatch = useDispatch()
 
   const { toggleMainClock, toggleBreakClock } = useClock()
+  const { startMatch } = useApi()
   const { keyboardInput } = useKeyboard()
+  const tournamentId = useSelector(
+    (state: State) => state.scoreboard.tournamentId
+  )
+  const matchId = useSelector((state: State) => state.scoreboard.matchId)
+  const clockStatus = useSelector((state: State) => state.mainClock.status)
 
   useEffect(() => {
     document.addEventListener('keyup', keyboardInput)
@@ -68,9 +76,12 @@ function Scoreboard() {
         dispatch(setMainClockStatus(ClockStatus.READY))
       } else {
         toggleMainClock()
+        if (clockStatus === ClockStatus.READY && tournamentId && matchId) {
+          startMatch(tournamentId, matchId)
+        }
       }
     },
-    [dispatch, toggleMainClock]
+    [clockStatus, dispatch, matchId, startMatch, toggleMainClock, tournamentId]
   )
 
   const onBreakClockClick = (event: any) => {
